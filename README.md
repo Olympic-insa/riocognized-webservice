@@ -1,6 +1,6 @@
-riocognized-webservice
+Rio'Cognized Webservice
 ======================
 
-Webservice de l'appli Rio'cognized. 
+RESTFull Webservice de l'appli Rio'cognized. 
 
 Olympic-INSA Team
