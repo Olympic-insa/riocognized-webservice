@@ -2,18 +2,12 @@ package fr.olympicinsa.riocognized.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
+import org.eclipse.persistence.oxm.annotations.XmlInverseReference;
 
 @Entity
-@NamedQuery(name = "findAthleteBySport", 
-query = "SELECT c " +
-        "FROM Athlete c " +
-        "WHERE c.sport.name = :sport")
 public class Athlete {
 
 	@Id
@@ -26,14 +20,8 @@ public class Athlete {
 	private String content;
 	
     @ManyToOne
+    @JoinColumn(name="ID_SPORT")
 	private Sport sport;
-
-	public Athlete(Long id, String name, String surname, String content) {
-		this.id = id;
-		this.content = content;
-		this.name = name;
-		this.surname = surname;
-	}
 
 	public Long getId() {
 		return id;
@@ -66,7 +54,7 @@ public class Athlete {
 	public void setSport(Sport sport) {
 		this.sport = sport;
 	}
-
+	
 	public Sport getSport() {
 		return this.sport;
 	}
