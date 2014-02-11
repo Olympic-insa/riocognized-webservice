@@ -1,12 +1,12 @@
-package fr.olympicinsa.riocognized.webservice.athlete;
+package fr.olympicinsa.riocognized;
 
 public class Athlete {
 
-    private final long id;
+    private long id;
     private final String name;
     private final String surname;
     private final String content;
-
+    
     public Athlete(long id, String name, String surname, String content) {
         this.id = id;
         this.content = content;
@@ -29,4 +29,9 @@ public class Athlete {
     public String getSurname() {
         return surname;
     }
+
+	public void setId(long id) {
+		this.id = id;	
+	}
+
 }
