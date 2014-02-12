@@ -19,15 +19,18 @@ import org.json.JSONException;
 import fr.olympicinsa.riocognized.model.*;
 import fr.olympicinsa.riocognized.repository.*;
 import javax.persistence.PersistenceContext;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * Handles requests for the application home page.
  */
 @Controller
 @RequestMapping("/athlete")
+@ComponentScan("fr.olympicinsa.riocognized.repository")
 public class AthleteController {
 
-
+    @Autowired
     private AthleteRepository athleteRepository;
     private static final String template = "I am %s %s!";
     private final AtomicLong counter = new AtomicLong();
