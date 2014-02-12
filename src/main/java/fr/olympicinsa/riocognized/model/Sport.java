@@ -8,10 +8,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import java.util.Collection;
+import java.io.Serializable;
 
 @Entity
 @Table(name="SPORT")
-public class Sport {
+public class Sport implements Serializable{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
