@@ -7,8 +7,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.eclipse.persistence.oxm.annotations.XmlInverseReference;
-
 import java.util.Collection;
 
 @Entity
@@ -39,7 +37,7 @@ public class Sport {
     public void setName(String name) {
         this.name = name;
     }
-    @XmlInverseReference(mappedBy="sport")
+
     public Collection<Athlete> getAthletes() {
         return athletes;
     }
