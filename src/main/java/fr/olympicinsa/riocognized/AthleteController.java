@@ -26,8 +26,8 @@ import org.springframework.context.annotation.ComponentScan;
  * Handles requests for the application home page.
  */
 @Controller
-@RequestMapping("/athlete")
 @ComponentScan("fr.olympicinsa.riocognized.repository")
+@RequestMapping("/*")
 public class AthleteController {
 
     @Autowired
@@ -35,7 +35,7 @@ public class AthleteController {
     private static final String template = "I am %s %s!";
     private final AtomicLong counter = new AtomicLong();
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(value="/api", method = RequestMethod.GET)
     public 
    @ResponseBody 
         String listAthleteJson(ModelMap model) throws JSONException {
@@ -51,7 +51,7 @@ public class AthleteController {
         return athleteArray.toString();
     }
 
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     public String listUsers(ModelMap model) {
         model.addAttribute("athlete", new Athlete());
         model.addAttribute("athletes", athleteRepository.findAll());

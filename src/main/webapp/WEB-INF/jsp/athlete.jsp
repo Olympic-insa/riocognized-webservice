@@ -36,9 +36,9 @@
                 </div>
             </div>
             <div class="control-group">
-                <form:label cssClass="control-label" path="email">Email:</form:label>
+                <form:label cssClass="control-label" path="content">Palmares:</form:label>
                 <div class="controls">
-                    <form:input path="email"/>
+                    <form:input path="content"/>
                 </div>
             </div>
             <div class="control-group">
@@ -54,7 +54,7 @@
                     <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Email</th>
+                        <th>Palmares</th>
                         <th>&nbsp;</th>
                     </tr>
                     </thead>
@@ -62,7 +62,7 @@
                     <c:forEach items="${athletes}" var="athlete">
                         <tr>
                             <td>${athlete.name}, ${athlete.surname}</td>
-                            <td>${athlete.email}</td>
+                            <td>${athlete.content}</td>
                             <td>
                                 <form action="delete/${athlete.id}" method="post"><input type="submit" class="btn btn-danger btn-mini" value="Delete"/></form>
                             </td>

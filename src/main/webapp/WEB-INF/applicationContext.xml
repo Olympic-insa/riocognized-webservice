@@ -26,7 +26,7 @@
    
     <jpa:repositories base-package="fr.olympicinsa.riocognized.repository"/>
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <property name="persistenceUnitName" value="jdni/riocognized"/>
+        <property name="persistenceUnitName" value="jdbc/riocognized"/>
     </bean>
     <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
     </bean>
