@@ -37,12 +37,12 @@ public class AthleteController {
         String listAthleteJson(ModelMap model) throws JSONException {
         JSONArray athleteArray = new JSONArray();
         for (Athlete athlete : athleteRepository.findAll()) {
-            JSONObject userJSON = new JSONObject();
-            userJSON.put("id", athlete.getId());
-            userJSON.put("firstName", athlete.getSurname());
-            userJSON.put("lastName", athlete.getName());
-            userJSON.put("email", athlete.getSport());
-            userArray.put(userJSON);
+            JSONObject athleteJSON = new JSONObject();
+            athleteJSON.put("id", athlete.getId());
+            athleteJSON.put("firstName", athlete.getSurname());
+            athleteJSON.put("lastName", athlete.getName());
+            athleteJSON.put("email", athlete.getSport());
+            athleteArray.put(athleteJSON);
         }
         return athleteArray.toString();
     }
