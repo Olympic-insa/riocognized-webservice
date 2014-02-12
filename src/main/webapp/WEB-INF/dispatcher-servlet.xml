@@ -39,14 +39,5 @@
           p:viewName="athlete" />
 
     <jpa:repositories base-package="fr.olympicinsa.riocognized.repository"/>
-
-    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
-        <property name="persistenceUnitName" value="fr.olympicinsa_riocognized_war_1.0PU"/>
-    </bean>
-
-    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="entityManagerFactory" ref="entityManagerFactory" />
-    </bean>
- 
     <tx:annotation-driven transaction-manager="transactionManager"/>
 </beans>
