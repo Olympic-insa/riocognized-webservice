@@ -5,7 +5,20 @@
     <jta-data-source>jdni/riocognized</jta-data-source>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
-      <property name="javax.persistence.schema-generation.database.action" value="create"/>
+        <property name="javax.persistence.schema-generation.database.action" value="create"/>
+       <class>fr.olympicinsa.riocognized.model.Athlete</class>
+        <class>fr.olympicinsa.riocognized.model.Sport</class>
+        <properties>
+            <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
+            <property name="hibernate.connection.url" value="jdbc:postgresql://olympic-insa.fr.nf:5432/riocognized"/>
+            <property name="hibernate.connection.username" value="olympicinsa"/>
+            <property name="hibernate.connection.password" value="olympicinsa$2014"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+            <property name="hibernate.show_sql" value="true" />
+            <property name="hibernate.hbm2ddl.auto" value="create" />
+
+        </properties>
     </properties>
   </persistence-unit>
 </persistence>
