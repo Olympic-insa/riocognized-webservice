@@ -5,7 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import org.eclipse.persistence.oxm.annotations.XmlInverseReference;
 
 @Entity
 public class Athlete {
