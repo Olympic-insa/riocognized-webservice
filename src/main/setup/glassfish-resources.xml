@@ -10,5 +10,5 @@
         <property name="URL" value="jdbc:postgresql://olympic-insa.fr.nf:5432/riocognized"/>
         <property name="driverClass" value="org.postgresql.Driver"/>
     </jdbc-connection-pool>
-    <jdbc-resource enabled="true" jndi-name="jdni/riocognized" object-type="user" pool-name="post-gre-sql_riocognized_olympicinsaPool"/>
+    <jdbc-resource enabled="true" jndi-name="jndi/riocognized" object-type="user" pool-name="post-gre-sql_riocognized_olympicinsaPool"/>
 </resources>

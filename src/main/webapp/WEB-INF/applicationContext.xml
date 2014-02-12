@@ -24,7 +24,7 @@
     p:password="${jdbc.password}" /-->
 
     <!-- ADD PERSISTENCE SUPPORT HERE (jpa, hibernate, etc) -->
-  <jee:jndi-lookup id="jdni/riocognized" jndi-name="jdni/riocognized"/>
+  <jee:jndi-lookup id="jndi/riocognized" jndi-name="jndi/riocognized"/>
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="persistenceUnitName" value="riocognized"/>
     </bean>
