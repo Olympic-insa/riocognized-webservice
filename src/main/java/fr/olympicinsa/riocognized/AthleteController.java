@@ -18,6 +18,7 @@ import org.json.JSONException;
 
 import fr.olympicinsa.riocognized.model.*;
 import fr.olympicinsa.riocognized.repository.*;
+import javax.persistence.PersistenceContext;
 
 /**
  * Handles requests for the application home page.
@@ -26,7 +27,7 @@ import fr.olympicinsa.riocognized.repository.*;
 @RequestMapping("/athlete")
 public class AthleteController {
 
-    @Autowired
+
     private AthleteRepository athleteRepository;
     private static final String template = "I am %s %s!";
     private final AtomicLong counter = new AtomicLong();

@@ -26,6 +26,6 @@
     </welcome-file-list>
       <persistence-unit-ref>
         <persistence-unit-ref-name>jdni/riocognized</persistence-unit-ref-name>
-        <persistence-unit-name>riocognized</persistence-unit-name>
+        <persistence-unit-name>jdni/riocognized</persistence-unit-name>
     </persistence-unit-ref>
 </web-app>

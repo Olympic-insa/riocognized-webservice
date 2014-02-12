@@ -6,6 +6,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.io.Serializable;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Table;
 
 @Entity
@@ -13,16 +15,17 @@ import javax.persistence.Table;
 public class Athlete implements Serializable{
 
 	@Id
+        @GeneratedValue
 	private Long id;
 	@Column(name="LAST_NAME")
 	private String name;
 	@Column(name="FIRST_NAME")
 	private String surname;
-	
+	@Column(name="CONTENT")
 	private String content;
 	
-    @ManyToOne
-    @JoinColumn(name="ID_SPORT")
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name="ID_SPORT")
 	private Sport sport;
 
 	public Long getId() {

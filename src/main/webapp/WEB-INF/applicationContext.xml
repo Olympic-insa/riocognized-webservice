@@ -25,8 +25,8 @@
 
     <!-- ADD PERSISTENCE SUPPORT HERE (jpa, hibernate, etc) -->
   <jee:jndi-lookup id="jndi/riocognized" jndi-name="jndi/riocognized"/>
-    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <property name="persistenceUnitName" value="riocognized"/>
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
+        <property name="persistenceUnitName" value="jdni/riocognized"/>
     </bean>
     <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager" />
     <bean id="persistenceAnnotation" class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />

@@ -7,5 +7,9 @@
     <property name="hibernate.connection.url">jdbc:postgresql://olympic-insa.fr.nf:5432/riocognized</property>
     <property name="hibernate.connection.username">olympicinsa</property>
     <property name="hibernate.connection.password">olympicinsa$2014</property>
+    <property name="hibernate.show_sql">true</property>
+    <mapping class="fr.olympicinsa.riocognized.model.Sport"/>
+    <mapping class="fr.olympicinsa.riocognized.model.Athlete"/>
+
   </session-factory>
 </hibernate-configuration>

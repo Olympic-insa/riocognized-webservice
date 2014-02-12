@@ -7,21 +7,23 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import java.util.Collection;
+import java.util.List;
 import java.io.Serializable;
+import javax.persistence.Column;
+import javax.persistence.FetchType;
 
 @Entity
 @Table(name="SPORT")
 public class Sport implements Serializable{
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private String id;
-
+    @Column(name="NAME")
     private String name;
 
-    @OneToMany(mappedBy="sport")
-    private Collection<Athlete> athletes;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="sport")
+    private List<Athlete> athletes;
 
     public String getId() {
         return id;
@@ -39,11 +41,11 @@ public class Sport implements Serializable{
         this.name = name;
     }
 
-    public Collection<Athlete> getAthletes() {
+    public List<Athlete> getAthletes() {
         return athletes;
     }
 
-    public void setAthletes(Collection<Athlete> athletes) {
+    public void setAthletes(List<Athlete> athletes) {
         this.athletes = athletes;
     }
 
