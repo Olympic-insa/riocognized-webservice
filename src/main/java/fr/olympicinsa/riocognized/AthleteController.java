@@ -32,7 +32,7 @@ public class AthleteController {
     @Autowired
     private AthleteRepository athleteRepository;
 
-    @RequestMapping(value="/api", method = RequestMethod.GET)
+    @RequestMapping(value="/api/getAll", method = RequestMethod.GET)
     public 
    @ResponseBody 
         String listAthleteJson(ModelMap model) throws JSONException {
