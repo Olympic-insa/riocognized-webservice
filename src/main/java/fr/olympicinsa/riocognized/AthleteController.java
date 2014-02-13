@@ -42,6 +42,7 @@ public class AthleteController {
             athleteJSON.put("id", athlete.getId());
             athleteJSON.put("firstName", athlete.getSurname());
             athleteJSON.put("lastName", athlete.getName());
+            athleteJSON.put("age", athlete.getAge());
             athleteJSON.put("country", athlete.getCountry());
             athleteJSON.put("sport", athlete.getSport());
             athleteJSON.put("palmares", athlete.getContent());

@@ -24,9 +24,11 @@
 
     <body>
 
-        <div class="container" style="max-width: 500px">
+        <div class="container" style="text-align: left">
             <div class="row">
                 <div class="span8 offset2">
+                    
+                    <div class="add"  style="max-width: 500px; display: inline-block; text-align: left">
                     <h1>Athlètes</h1>
                     <form:form method="post" action="${contextPath}/add" commandName="athlete" class="form-horizontal">
                         <div class="control-group">
@@ -70,10 +72,11 @@
                                 <br>
                                 <input type="submit" value="Add Athlete" class="btn-primary btn btn-block"/>
                             </form:form>
+                            </div>
                         </div>
                     </div>
-
-                    <c:if test="${!empty athletes}">
+                     <div class="show">
+                        <c:if test="${!empty athletes}">
                         <h3>Athletes</h3>
                         <table class="table table-bordered table-striped">
                             <thead>
@@ -101,7 +104,8 @@
                                 </c:forEach>
                             </tbody>
                         </table>
-                    </c:if>
+                        </c:if>
+                     </div>
                 </div>
             </div>
         </div>
