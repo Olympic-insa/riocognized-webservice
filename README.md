@@ -17,6 +17,21 @@ Usages
 
 => return JSON with all athletes
 
+`GET /api/getByCountry/{country}`
+
+=> return JSON with all coutnry athletes
+
+`GET /api/getAll`
+
+=> return JSON with all athletes
+
+`GET /api/getByCountry/{country}`
+
+`GET /api/getBySport/{sport}`
+
+`GET /api/getByName/{name}`
+
+
 Enjoy ! 
 
 ======================
