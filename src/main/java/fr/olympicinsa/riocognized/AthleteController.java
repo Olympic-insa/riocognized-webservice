@@ -27,7 +27,6 @@ import org.springframework.context.annotation.ComponentScan;
  */
 @Controller
 @ComponentScan("fr.olympicinsa.riocognized.repository")
-@RequestMapping("/*")
 public class AthleteController {
 
     @Autowired
@@ -45,7 +44,7 @@ public class AthleteController {
             athleteJSON.put("id", athlete.getId());
             athleteJSON.put("firstName", athlete.getSurname());
             athleteJSON.put("lastName", athlete.getName());
-            athleteJSON.put("email", athlete.getSport());
+            athleteJSON.put("palmares", athlete.getSport());
             athleteArray.put(athleteJSON);
         }
         return athleteArray.toString();
@@ -64,7 +63,7 @@ public class AthleteController {
         return "redirect:/";
     }
 
-    @RequestMapping("/delete/{athleteId}")
+    @RequestMapping(value ="/delete/{athleteId}", method = RequestMethod.POST)
     public String deleteUser(@PathVariable("athleteId") Long athleteId) {
 
         athleteRepository.delete(athleteRepository.findOne(athleteId));

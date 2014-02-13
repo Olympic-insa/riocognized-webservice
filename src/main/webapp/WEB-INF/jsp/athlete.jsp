@@ -12,8 +12,8 @@
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
  
-    <link href="http://twitter.github.io/bootstrap/assets/css/bootstrap.css" rel="stylesheet">
-    <link href="http://twitter.github.io/bootstrap/assets/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js" rel="stylesheet">
 </head>
  
 <body>
@@ -22,7 +22,7 @@
     <div class="row">
         <div class="span8 offset2">
             <h1>Athletes</h1>
-            <form:form method="post" action="add" commandName="athlete" class="form-horizontal">
+            <form:form method="post" action="/add" commandName="athlete" class="form-horizontal">
             <div class="control-group">
                 <form:label cssClass="control-label" path="surname">First Name:</form:label>
                 <div class="controls">
@@ -43,7 +43,8 @@
             </div>
             <div class="control-group">
                 <div class="controls">
-                    <input type="submit" value="Add Athlete" class="btn"/>
+                    <br>
+                    <input type="submit" value="Add Athlete" class="btn-primary"/>
                     </form:form>
                 </div>
             </div>
@@ -64,7 +65,7 @@
                             <td>${athlete.name}, ${athlete.surname}</td>
                             <td>${athlete.content}</td>
                             <td>
-                                <form action="delete/${athlete.id}" method="post"><input type="submit" class="btn btn-danger btn-mini" value="Delete"/></form>
+                                <form action="/delete/${athlete.id}" method="post"><input type="submit" class="btn btn-danger btn-mini" value="Delete"/></form>
                             </td>
                         </tr>
                     </c:forEach>
