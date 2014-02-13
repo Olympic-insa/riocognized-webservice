@@ -3,6 +3,7 @@
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 
 <html>
     <head>
@@ -23,33 +24,51 @@
 
     <body>
 
-        <div class="container">
+        <div class="container" style="max-width: 500px">
             <div class="row">
                 <div class="span8 offset2">
-                    <h1>Athletes</h1>
-                    <form:form method="post" action="/add" commandName="athlete" class="form-horizontal">
+                    <h1>Athlètes</h1>
+                    <form:form method="post" action="${contextPath}/add" commandName="athlete" class="form-horizontal">
                         <div class="control-group">
-                            <form:label cssClass="control-label" path="surname">First Name:</form:label>
+                            <form:label cssClass="control-label" path="surname">Prénom :</form:label>
                                 <div class="controls">
-                                <form:input path="surname" class="form-control" placeholder="First Name"/>
+                                <form:input path="surname" class="form-control" placeholder="Prénom"/>
                             </div>
                         </div>
                         <div class="control-group">
-                            <form:label cssClass="control-label" path="name">Last Name:</form:label>
+                            <form:label cssClass="control-label" path="name">Nom :</form:label>
                                 <div class="controls">
-                                <form:input path="name" class="form-control" placeholder="Name"/>
+                                <form:input path="name" class="form-control" placeholder="Nom"/>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <form:label cssClass="control-label" path="age">Age :</form:label>
+                            <div class="controls">
+                                <form:input path="age" class="form-control" placeholder="Age"/>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <form:label cssClass="control-label" path="sport">Sport :</form:label>
+                            <div class="controls">
+                                <form:input path="sport" class="form-control" placeholder="Sport"/>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <form:label cssClass="control-label" path="country">Pays :</form:label>
+                            <div class="controls">
+                                <form:input path="country" class="form-control" placeholder="Pays"/>
                             </div>
                         </div>
                         <div class="control-group">
                             <form:label cssClass="control-label" path="content">Palmarès:</form:label>
                             <div class="controls">
-                                <form:input path="content" class="form-control" placeholder="Palmarès de l'athlete"/>
+                                <form:textarea path="content" class="form-control" placeholder="Palmarès de l'athlete"/>
                             </div>
                         </div>
                         <div class="control-group">
                             <div class="controls">
                                 <br>
-                                <input type="submit" value="Add Athlete" class="btn-primary"/>
+                                <input type="submit" value="Add Athlete" class="btn-primary btn btn-block"/>
                             </form:form>
                         </div>
                     </div>
@@ -59,7 +78,10 @@
                         <table class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
+                                    <th>Nom</th>
+                                    <th>Pays</th>
+                                    <th>Age</th>
+                                    <th>Sport</th>
                                     <th>Palmares</th>
                                     <th>&nbsp;</th>
                                 </tr>
@@ -68,9 +90,12 @@
                                 <c:forEach items="${athletes}" var="athlete">
                                     <tr>
                                         <td>${athlete.name}, ${athlete.surname}</td>
+                                        <td>${athlete.age}</td>
+                                        <td>${athlete.country}</td>
+                                        <td>${athlete.sport}</td>
                                         <td>${athlete.content}</td>
                                         <td>
-                                            <form action="/delete/${athlete.id}" method="post"><input type="submit" class="btn btn-danger btn-mini" value="Delete"/></form>
+                                            <form action="${contextPath}/delete/${athlete.id}" method="post"><input type="submit" class="btn btn-danger btn-block" value="Delete"/></form>
                                         </td>
                                     </tr>
                                 </c:forEach>

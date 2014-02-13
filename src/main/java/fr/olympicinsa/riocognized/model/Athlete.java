@@ -23,10 +23,15 @@ public class Athlete implements Serializable{
 	private String surname;
 	@Column(name="CONTENT")
 	private String content;
-	
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name="ID_SPORT")
-	private Sport sport;
+	@Column(name="COUNTRY")
+	private String country;
+        @Column(name="SPORT")
+	private String sport;
+        @Column(name="AGE")
+	private Integer age;
+//        @ManyToOne(fetch = FetchType.LAZY)
+//        @JoinColumn(name="ID_SPORT")
+//	private Sport sportID;
 
 	public Long getId() {
 		return id;
@@ -42,10 +47,23 @@ public class Athlete implements Serializable{
 
 	public void setName(String name) {
 		this.name = name;
+	}  
+
+        
+        public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
 	}
 
 	public void setSurname(String surname) {
 		this.surname = surname;
+	}
+        
+        public void setContent(String content) {
+		this.content = content;
 	}
 
 	public String getSurname() {
@@ -56,12 +74,27 @@ public class Athlete implements Serializable{
 		this.id = id;	
 	}
 
-	public void setSport(Sport sport) {
+//	public void setSportID(Sport sportID) {
+//		this.sportID = sportID;
+//	}
+//	
+//	public Sport getSportID() {
+//		return this.sportID;
+//	}
+        
+	public void setSport(String sport) {
 		this.sport = sport;
 	}
 	
-	public Sport getSport() {
+	public String getSport() {
 		return this.sport;
 	}
-
+        
+        public void setAge(Integer age) {
+		this.age = age;
+	}
+	
+	public Integer getAge() {
+		return this.age;
+	}
 }

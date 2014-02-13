@@ -22,8 +22,8 @@ public class Sport implements Serializable{
     @Column(name="NAME")
     private String name;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="sport")
-    private List<Athlete> athletes;
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy="sportID")
+//    private List<Athlete> athletes;
 
     public String getId() {
         return id;
@@ -41,12 +41,12 @@ public class Sport implements Serializable{
         this.name = name;
     }
 
-    public List<Athlete> getAthletes() {
-        return athletes;
-    }
-
-    public void setAthletes(List<Athlete> athletes) {
-        this.athletes = athletes;
-    }
+//    public List<Athlete> getAthletes() {
+//        return athletes;
+//    }
+//
+//    public void setAthletes(List<Athlete> athletes) {
+//        this.athletes = athletes;
+//    }
 
 }

@@ -31,8 +31,6 @@ public class AthleteController {
 
     @Autowired
     private AthleteRepository athleteRepository;
-    private static final String template = "I am %s %s!";
-    private final AtomicLong counter = new AtomicLong();
 
     @RequestMapping(value="/api", method = RequestMethod.GET)
     public 
@@ -44,7 +42,9 @@ public class AthleteController {
             athleteJSON.put("id", athlete.getId());
             athleteJSON.put("firstName", athlete.getSurname());
             athleteJSON.put("lastName", athlete.getName());
-            athleteJSON.put("palmares", athlete.getSport());
+            athleteJSON.put("country", athlete.getCountry());
+            athleteJSON.put("sport", athlete.getSport());
+            athleteJSON.put("palmares", athlete.getContent());
             athleteArray.put(athleteJSON);
         }
         return athleteArray.toString();
