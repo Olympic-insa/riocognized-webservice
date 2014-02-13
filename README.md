@@ -1,19 +1,21 @@
 Rio'Cognized Webservice
 ======================
 
-RESTFull Webservice de l'appli Rio'cognized. 
-
+Rio'cognized App RESTFull Webservice. 
 
 Usages
 -----
-`GET /athlete`
+`GET /`
  
-=> { "id":1,"name":"bolt","surname":"usain","content":"I am usain bolt!" }
+=> Main Page - Add & Delete Athlete
 
-`GET /athlete?name=bob&surname=alice`
+`POST /delete/{athleteID}`
 
-=> { "id":2,"name":"bob","surname":"alice","content":"I am alice bob!" }
+=> Delete Athlete & return /
 
+`GET /api/getAll`
+
+=> return JSON with all athletes
 
 Enjoy ! 
 
