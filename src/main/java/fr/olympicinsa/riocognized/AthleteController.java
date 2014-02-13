@@ -1,6 +1,5 @@
 package fr.olympicinsa.riocognized;
 
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.json.JSONObject;
 import org.json.JSONArray;
@@ -18,8 +16,6 @@ import org.json.JSONException;
 
 import fr.olympicinsa.riocognized.model.*;
 import fr.olympicinsa.riocognized.repository.*;
-import javax.persistence.PersistenceContext;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.ComponentScan;
 
 /**
@@ -50,7 +46,44 @@ public class AthleteController {
         }
         return athleteArray.toString();
     }
-
+        
+    @RequestMapping(value="/api/getByName/{name}", method = RequestMethod.GET)
+    public 
+   @ResponseBody 
+        String listAthleteByNameJson(ModelMap model, @PathVariable("name") String name) throws JSONException {
+        JSONArray athleteArray = new JSONArray();
+        for (Athlete athlete : athleteRepository.findByNameStartingWith(name.toLowerCase())) {
+            JSONObject athleteJSON = new JSONObject();
+            athleteJSON.put("id", athlete.getId());
+            athleteJSON.put("firstName", athlete.getSurname());
+            athleteJSON.put("lastName", athlete.getName());
+            athleteJSON.put("age", athlete.getAge());
+            athleteJSON.put("country", athlete.getCountry());
+            athleteJSON.put("sport", athlete.getSport());
+            athleteJSON.put("palmares", athlete.getContent());
+            athleteArray.put(athleteJSON);
+        }
+        return athleteArray.toString();
+    }
+    @RequestMapping(value="/api/getBySport/{sport}", method = RequestMethod.GET)
+    public 
+   @ResponseBody 
+        String listAthleteBySportJson(ModelMap model, @PathVariable("sport") String sport) throws JSONException {
+        JSONArray athleteArray = new JSONArray();
+        for (Athlete athlete : athleteRepository.findBySportStartingWith(sport.toLowerCase())) {
+            JSONObject athleteJSON = new JSONObject();
+            athleteJSON.put("id", athlete.getId());
+            athleteJSON.put("firstName", athlete.getSurname());
+            athleteJSON.put("lastName", athlete.getName());
+            athleteJSON.put("age", athlete.getAge());
+            athleteJSON.put("country", athlete.getCountry());
+            athleteJSON.put("sport", athlete.getSport());
+            athleteJSON.put("palmares", athlete.getContent());
+            athleteArray.put(athleteJSON);
+        }
+        return athleteArray.toString();
+    }
+        
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String listUsers(ModelMap model) {
         model.addAttribute("athlete", new Athlete());
