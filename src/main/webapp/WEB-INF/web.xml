@@ -4,10 +4,12 @@
         <param-name>contextConfigLocation</param-name>
         <param-value>/WEB-INF/applicationContext.xml</param-value>
     </context-param>
+    
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>/WEB-INF/dispatcher-servlet.xml</param-value>
     </context-param>
+    
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
@@ -28,11 +30,14 @@
             30
         </session-timeout>
     </session-config>
+    
     <welcome-file-list>
         <welcome-file>redirect.jsp</welcome-file>
     </welcome-file-list>
+    
     <persistence-unit-ref>
         <persistence-unit-ref-name>jdbc/riocognized</persistence-unit-ref-name>
         <persistence-unit-name>jdbc/riocognized</persistence-unit-name>
     </persistence-unit-ref>
+    
 </web-app>
