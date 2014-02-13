@@ -24,7 +24,7 @@
 
     <body>
 
-        <div class="container" style="text-align: left">
+        <div class="container" style="text-align: center">
             <div class="row">
                 <div class="span8 offset2">
                     
