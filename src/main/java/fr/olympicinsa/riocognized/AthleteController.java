@@ -43,7 +43,7 @@ public class AthleteController {
     @RequestMapping(value = "/api/athletes/{id}", method = RequestMethod.GET)
     public @ResponseBody
     Athlete athleteByIdJson(ModelMap model, @PathVariable("id") long id) throws JSONException {
-        return athleteRepository.find(id);
+        return athleteRepository.findOne(id);
     }
 
     @RequestMapping(value = "/api/athletes/sport/{sport}", method = RequestMethod.GET)
