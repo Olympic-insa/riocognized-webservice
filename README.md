@@ -9,27 +9,25 @@ Usages
  
 => Main Page - Add & Delete Athlete
 
-`POST /delete/{athleteID}`
+`POST /delete/{id}`
 
 => Delete Athlete & return /
 
-`GET /api/getAll`
+`GET /api/athletes`
 
 => return JSON with all athletes
 
-`GET /api/getByCountry/{country}`
+`GET /api/athletes/{id}`
 
-=> return JSON with all coutnry athletes
+=> return JSON with athlete
 
-`GET /api/getAll`
+`GET /api/athletes/country/{country}`
 
-=> return JSON with all athletes
+=> return JSON with all coutry athletes
 
-`GET /api/getByCountry/{country}`
+`GET /api/athletes/sport/{sport}`
 
-`GET /api/getBySport/{sport}`
-
-`GET /api/getByName/{name}`
+`GET /api//athletes/name/{name}`
 
 
 Enjoy ! 

@@ -28,24 +28,30 @@ public class AthleteController {
     @Autowired
     private AthleteRepository athleteRepository;
 
-    @RequestMapping(value = "/api/getAll", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/athletes", method = RequestMethod.GET)
     public @ResponseBody
     List <Athlete> listAthleteJson(ModelMap model) throws JSONException {
         return athleteRepository.findAll();  
     }
 
-    @RequestMapping(value = "/api/getByName/{name}", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/athletes/name/{name}", method = RequestMethod.GET)
     public @ResponseBody
     List<Athlete> listAthleteByNameJson(ModelMap model, @PathVariable("name") String name) throws JSONException {
         return athleteRepository.findByNameStartingWith(name.toLowerCase());
     }
+    
+    @RequestMapping(value = "/api/athletes/{id}", method = RequestMethod.GET)
+    public @ResponseBody
+    Athlete athleteByIdJson(ModelMap model, @PathVariable("id") long id) throws JSONException {
+        return athleteRepository.find(id);
+    }
 
-    @RequestMapping(value = "/api/getBySport/{sport}", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/athletes/sport/{sport}", method = RequestMethod.GET)
     public @ResponseBody
     List<Athlete> listAthleteBySportJson(ModelMap model, @PathVariable("sport") String sport) throws JSONException {
         return athleteRepository.findBySportStartingWith(sport.toLowerCase());
     }
-    @RequestMapping(value = "/api/getByCountry/{country}", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/athletes/country/{country}", method = RequestMethod.GET)
     public @ResponseBody
     List<Athlete> listAthleteByCountryJson(ModelMap model, @PathVariable("country") String country) throws JSONException {
         return athleteRepository.findByCountryStartingWith(country.toLowerCase());
@@ -64,8 +70,8 @@ public class AthleteController {
         return "redirect:/";
     }
 
-    @RequestMapping(value = "/delete/{athleteId}", method = RequestMethod.POST)
-    public String deleteUser(@PathVariable("athleteId") Long athleteId) {
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    public String deleteUser(@PathVariable("id") Long athleteId) {
         athleteRepository.delete(athleteRepository.findOne(athleteId));
         return "redirect:/";
     }

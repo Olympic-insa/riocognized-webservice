@@ -18,4 +18,6 @@ public interface AthleteRepository extends JpaRepository<Athlete, Long> {
     
     @Query("select u from Athlete u where lower(u.country) like ?1%")
     List<Athlete> findByCountryStartingWith(String sport);
+    
+    Athlete find(long id);
 }
