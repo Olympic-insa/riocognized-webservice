@@ -16,7 +16,7 @@
 <h2>Image Manager</h2>
  
 <h3>Add new image</h3>
-<form:form method="post" action="save.html" commandName="image" enctype="multipart/form-data">
+<form:form method="post" action="image/save.html" commandName="image" enctype="multipart/form-data">
     <form:errors path="*" cssClass="error"/>
     <table>
     <tr>
@@ -51,15 +51,17 @@
 <c:forEach items="${imageList}" var="image">
     <tr>
         <td width="100px">${image.name}</td>
+        <td width="100px"><img
+                src="${pageContext.request.contextPath}/image/download/${image.id}" border="0"/></td>
         <td width="250px">${image.description}</td>
         <td width="20px">
-            <a href="${pageContext.request.contextPath}/download/${image.id}.html"><img
+            <a href="${pageContext.request.contextPath}/image/download/${image.id}"><img
                 src="${pageContext.request.contextPath}/img/save_icon.gif" border="0"
                 title="Download this image"/></a> 
          
-            <a href="${pageContext.request.contextPath}/remove/${image.id}.html"
+            <a href="${pageContext.request.contextPath}/image/remove/${image.id}"
                 onclick="return confirm('Are you sure you want to delete this image?')"><img
-                src="${pageContext.request.contextPath}/img/delete_icon.gif" border="0"
+                src="img/delete_icon.gif" border="0"
                 title="Delete this image"/></a> 
         </td>
     </tr>

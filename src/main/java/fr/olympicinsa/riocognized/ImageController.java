@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.multipart.MultipartFile;
 
 import org.apache.commons.io.IOUtils;
@@ -26,13 +27,16 @@ import org.apache.commons.io.IOUtils;
  *
  * @author alex
  */
+
 @Controller
+@RequestMapping("/image")
+@ComponentScan("fr.olympicinsa.riocognized.repository")
 public class ImageController {
 
     @Autowired
     private ImageRepository imageRepository;
 
-    @RequestMapping("/index")
+    @RequestMapping("")
     public String index(Map<String, Object> map) {
         try {
             map.put("image", new Image());
@@ -41,7 +45,7 @@ public class ImageController {
             e.printStackTrace();
         }
 
-        return "images";
+        return "image";
     }
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
@@ -70,7 +74,7 @@ public class ImageController {
             e.printStackTrace();
         }
 
-        return "redirect:/";
+        return "redirect:/image";
     }
 
     @RequestMapping("/download/{imageId}")
@@ -97,7 +101,7 @@ public class ImageController {
 
         imageRepository.delete(imageId);
 
-        return "redirect:/index.html";
+        return "redirect:/image";
     }
 }
 
