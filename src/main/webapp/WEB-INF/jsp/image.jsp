@@ -34,22 +34,22 @@
                 <div class="span8 offset2">
                     <div class="add"  style="max-width: 500px; display: inline-block; text-align: left">
                     <h1>Images Manager</h1>
-                        <form:form method="post" action="image/save.html" commandName="image" enctype="multipart/form-data" class="form-horizontal"/>
+                        <form:form method="post" action="image/save.html" commandName="image" enctype="multipart/form-data" class="form-horizontal">
                             <form:errors path="*" cssClass="error"/>
                         <div class="control-group">
-                            <form:label cssClass="control-label" path="nom">Nom :</form:label>
+                            <form:label cssClass="control-label" path="name">Nom :</form:label>
                             <div class="controls">
-                                <form:input path="nom" class="form-control" placeholder="Nom"/>
+                                <form:input path="name" class="form-control" placeholder="Nom"/>
                             </div>
                         </div>
                         <div class="control-group">
-                            <form:label cssClass="control-label" path="description">Description:</form:label>
+                            <form:label cssClass="control-label" path="description">Description :</form:label>
                             <div class="controls">
                                 <form:textarea path="description" class="form-control" placeholder="Description"/>
                             </div>
                         </div>
                         <div class="control-group">
-                            <form:label cssClass="control-label" path="content"Image:</form:label>
+                            <form:label cssClass="control-label" path="content">Image :</form:label>
                             <div class="controls">
                                 <input type="file" name="file" id="file" class="form-control"></input>
                             </div>
@@ -61,8 +61,9 @@
                             </form:form>
                             </div>
                         </div>
-
-                     <div class="show">
+                    </div>
+                   
+                    <div class="show" style="margin-top: 30px;text-align: center; vertical-align: middle">
                         <c:if  test="${!empty imageList}">
                         <h3>Images</h3>
                         <table class="table table-bordered table-striped">
@@ -78,9 +79,9 @@
                                 <c:forEach items="${imageList}" var="image">
                                 <tr>
                                         <td>${image.name}</td>
+                                        <td>${image.description}</td>
                                         <td><img
                                                 src="${pageContext.request.contextPath}/image/download/${image.id}" border="0" width="200px"/></td>
-                                        <td>${image.description}</td>
                                         <td width="20px">
                                             <a href="${pageContext.request.contextPath}/image/download/${image.id}"><img
                                                 src="${pageContext.request.contextPath}/img/save_icon.gif" border="0"
