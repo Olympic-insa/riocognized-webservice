@@ -23,10 +23,16 @@
     p:password="${jdbc.password}" /-->
 
     <!-- ADD PERSISTENCE SUPPORT HERE (jpa, hibernate, etc) -->
-   
+
     <jpa:repositories base-package="fr.olympicinsa.riocognized.repository"/>
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="persistenceUnitName" value="jdbc/riocognized"/>
+    </bean>
+    <bean id="multipartResolver"
+        class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+ 
+        <!-- one of the properties available; the maximum file size in bytes -->
+        <property name="maxUploadSize" value="10000000" />
     </bean>
     <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
     </bean>

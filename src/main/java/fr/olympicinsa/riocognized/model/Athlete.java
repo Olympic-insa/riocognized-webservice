@@ -9,9 +9,11 @@ import java.io.Serializable;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
 @Table(name="ATHLETE")
+@XmlRootElement
 public class Athlete implements Serializable{
 
 	@Id
