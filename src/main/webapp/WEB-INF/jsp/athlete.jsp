@@ -30,7 +30,7 @@
                     
                     <div class="add"  style="max-width: 500px; display: inline-block; text-align: left">
                     <h1>Athlètes</h1>
-                    <form:form method="post" action="${contextPath}/add" commandName="athlete" class="form-horizontal">
+                    <form:form method="post" action="${contextPath}/add" commandName="athlete" enctype="multipart/form-data" class="form-horizontal">
                         <div class="control-group">
                             <form:label cssClass="control-label" path="surname">Prénom :</form:label>
                                 <div class="controls">
@@ -70,7 +70,7 @@
                         <div class="control-group">
                             <form:label cssClass="control-label" path="content">Image :</form:label>
                             <div class="controls">
-                                <input type="file" path="image" class="form-control"></input>
+                                <input type="file" name="file" id="file" class="form-control"></input>
                             </div>
                         </div>
                         <div class="control-group">
@@ -104,7 +104,8 @@
                                         <td>${athlete.country}</td>
                                         <td>${athlete.sport}</td>
                                         <td>${athlete.content}</td>
-                                        <td>${athlete.image}</td>
+                                        <td><img
+                                                src="${pageContext.request.contextPath}/image/download/${athlete.image.id}" border="0" width="200px"/></td>
                                         <td>
                                             <form action="${contextPath}/delete/${athlete.id}" method="post"><input type="submit" class="btn btn-danger btn-block" value="Delete"/></form>
                                         </td>

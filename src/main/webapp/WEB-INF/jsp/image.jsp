@@ -89,7 +89,7 @@
                                          
                                             <a href="${pageContext.request.contextPath}/image/remove/${image.id}"
                                                 onclick="return confirm('Are you sure you want to delete this image?')"><img
-                                                src="img/delete_icon.gif" border="0"
+                                                src="${pageContext.request.contextPath}/img/delete_icon.gif" border="0"
                                                 title="Delete this image"/></a> 
                                         </td>
                                     </tr>

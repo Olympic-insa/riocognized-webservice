@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.json.JSONException;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
 import fr.olympicinsa.riocognized.model.*;
 import fr.olympicinsa.riocognized.repository.*;
 import java.util.List;
@@ -21,8 +24,11 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
+import org.springframework.web.multipart.MultipartFile;
 
+import org.apache.commons.io.IOUtils;
 /**
  * Handles requests for the application home page.
  */
@@ -75,7 +81,27 @@ public class AthleteController {
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String addUser(@ModelAttribute("athlete") Athlete athlete, BindingResult result) {
+    public String addUser(@ModelAttribute("athlete") Athlete athlete, 
+                          @RequestParam("file") MultipartFile file, BindingResult result) {
+
+        Image image = new Image();
+        try {
+            byte[] blob = IOUtils.toByteArray(file.getInputStream());
+            image.setFilename(file.getOriginalFilename());
+            image.setContent(blob);
+            image.setName(athlete.getName());
+            image.setDescription(athlete.getContent());
+            image.setContentType(file.getContentType());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+/*        try {
+            imageRepository.save(image);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
+        athlete.setImage(image);
         athleteRepository.save(athlete);
         return "redirect:/";
     }

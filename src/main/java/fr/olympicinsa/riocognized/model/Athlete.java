@@ -5,11 +5,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.io.Serializable;
 import javax.persistence.CascadeType;
+import javax.persistence.JoinColumn;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Table;
 import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -29,13 +29,14 @@ public class Athlete implements Serializable{
 	private String content;
 	@Column(name="COUNTRY")
 	private String country;
-        @Column(name="SPORT")
+    @Column(name="SPORT")
 	private String sport;
-        @Column(name="AGE")
+    @Column(name="AGE")
 	private Integer age;
         
-        @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-        private Image image;
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "image_id")
+    private Image image;
 //        @ManyToOne(fetch = FetchType.LAZY)
 //        @JoinColumn(name="ID_SPORT")
 //	private Sport sportID;
