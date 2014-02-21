@@ -10,6 +10,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Table;
 import javax.persistence.OneToOne;
+import org.json.JSONException;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -36,6 +38,7 @@ public class Athlete implements Serializable{
         
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "image_id")
+    @JsonIgnore
     private Image image;
 //        @ManyToOne(fetch = FetchType.LAZY)
 //        @JoinColumn(name="ID_SPORT")
