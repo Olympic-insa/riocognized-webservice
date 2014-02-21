@@ -104,8 +104,10 @@
                                         <td>${athlete.country}</td>
                                         <td>${athlete.sport}</td>
                                         <td>${athlete.content}</td>
-                                        <td><img
-                                                src="${pageContext.request.contextPath}/image/download/${athlete.image.id}" border="0" width="200px"/></td>
+                                        <td>
+                                            <c:if test="${!empty athlete.image}">
+                                            <img
+                                                src="${pageContext.request.contextPath}/image/download/${athlete.image.id}" border="0" width="200px"/></c:if></td>
                                         <td>
                                             <form action="${contextPath}/delete/${athlete.id}" method="post"><input type="submit" class="btn btn-danger btn-block" value="Delete"/></form>
                                         </td>
