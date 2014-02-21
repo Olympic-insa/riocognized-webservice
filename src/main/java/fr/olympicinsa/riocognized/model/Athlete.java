@@ -34,7 +34,7 @@ public class Athlete implements Serializable{
         @Column(name="AGE")
 	private Integer age;
         
-        @OneToOne(mappedBy="athlete", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+        @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
         private Image image;
 //        @ManyToOne(fetch = FetchType.LAZY)
 //        @JoinColumn(name="ID_SPORT")
