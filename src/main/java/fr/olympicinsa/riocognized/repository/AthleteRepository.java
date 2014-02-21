@@ -7,8 +7,9 @@ import fr.olympicinsa.riocognized.model.Athlete;
 import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-
+import org.springframework.transaction.annotation.Transactional;
 @Repository
+@Transactional
 public interface AthleteRepository extends JpaRepository<Athlete, Long> {
     @Query("select u from Athlete u where lower(u.name) like ?1%")
     List<Athlete> findByNameStartingWith(String name);
