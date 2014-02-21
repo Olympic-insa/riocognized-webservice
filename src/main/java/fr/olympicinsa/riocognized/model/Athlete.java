@@ -3,12 +3,14 @@ package fr.olympicinsa.riocognized.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import java.io.Serializable;
+import javax.persistence.CascadeType;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Table;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
@@ -31,6 +33,9 @@ public class Athlete implements Serializable{
 	private String sport;
         @Column(name="AGE")
 	private Integer age;
+        
+        @OneToOne(mappedBy="athlete", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+        private Image image;
 //        @ManyToOne(fetch = FetchType.LAZY)
 //        @JoinColumn(name="ID_SPORT")
 //	private Sport sportID;
@@ -58,6 +63,14 @@ public class Athlete implements Serializable{
 
 	public void setCountry(String country) {
 		this.country = country;
+	}
+        
+        public Image getImage() {
+		return image;
+	}
+
+	public void setImage(Image image) {
+		this.image = image;
 	}
 
 	public void setSurname(String surname) {

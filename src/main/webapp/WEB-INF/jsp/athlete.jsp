@@ -68,6 +68,12 @@
                             </div>
                         </div>
                         <div class="control-group">
+                            <form:label cssClass="control-label" path="content">Image :</form:label>
+                            <div class="controls">
+                                <input type="file" path="image" class="form-control"></input>
+                            </div>
+                        </div>
+                        <div class="control-group">
                             <div class="controls">
                                 <br>
                                 <input type="submit" value="Add Athlete" class="btn-primary btn btn-block"/>
@@ -86,6 +92,7 @@
                                     <th>Age</th>
                                     <th>Sport</th>
                                     <th>Palmares</th>
+                                    <th>Image</th>
                                     <th>&nbsp;</th>
                                 </tr>
                             </thead>
@@ -97,6 +104,7 @@
                                         <td>${athlete.country}</td>
                                         <td>${athlete.sport}</td>
                                         <td>${athlete.content}</td>
+                                        <td>${athlete.image}</td>
                                         <td>
                                             <form action="${contextPath}/delete/${athlete.id}" method="post"><input type="submit" class="btn btn-danger btn-block" value="Delete"/></form>
                                         </td>
