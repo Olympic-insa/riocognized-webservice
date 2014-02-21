@@ -12,7 +12,7 @@ import javax.persistence.Table;
 import javax.persistence.OneToOne;
 import org.json.JSONException;
 import org.codehaus.jackson.annotate.JsonIgnore;
-
+import javax.servlet.ServletContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
@@ -40,9 +40,6 @@ public class Athlete implements Serializable{
     @JoinColumn(name = "image_id")
     @JsonIgnore
     private Image image;
-//        @ManyToOne(fetch = FetchType.LAZY)
-//        @JoinColumn(name="ID_SPORT")
-//	private Sport sportID;
 
 	public Long getId() {
 		return id;
