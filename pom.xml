@@ -12,8 +12,23 @@
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <glassfish.domain.port>5000</glassfish.domain.port>
+        <glassfish.domain.host>192.168.0.12</glassfish.domain.host>
+        <glassfish.directory>/opt/glassfish4/glassfish</glassfish.directory>
+        <glassfish.user>admin</glassfish.user>
+        <glassfish.admin.password>alex</glassfish.admin.password>
+        <glassfish.mode.debug>true</glassfish.mode.debug>
     </properties>
-    
+
+    <pluginRepositories>
+
+        <pluginRepository>
+            <id>maven.java.net</id>
+            <name>Java.net Maven2 Repository</name>
+            <url>http://download.java.net/maven/2</url>
+        </pluginRepository>
+
+    </pluginRepositories>
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -271,7 +286,31 @@
                     </execution>
                 </executions>
             </plugin>
+
+              <plugin>
+                    <groupId>org.glassfish.maven.plugin</groupId>
+                    <artifactId>maven-glassfish-plugin</artifactId>
+                    <version>2.1</version>
+                    <configuration>
+                          <glassfishDirectory>${glassfish.directory}</glassfishDirectory>
+                          <user>${glassfish.user}</user>
+                          <adminPassword>${glassfish.admin.password}</adminPassword>
+                          <debug>${glassfish.mode.debug}</debug>
+                          <terse>true</terse>
+                          <echo>${glassfish.mode.debug}</echo>
+                          <domain>
+                                <adminPort>${glassfish.domain.port}</adminPort>
+                                <host>${glassfish.domain.host}</host>
+                                <name>${glassfish.domain.name}</name>
+                          </domain>
+                          <components>
+                                <component>
+                                      <name>${project.artifactId}</name>
+                                      <artifact>${project.build.directory}/${project.build.finalName}.war</artifact>
+                                </component>
+                          </components>
+                    </configuration>
+              </plugin>
         </plugins>
     </build>
-
 </project>

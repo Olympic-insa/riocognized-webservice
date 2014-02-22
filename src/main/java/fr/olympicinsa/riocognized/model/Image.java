@@ -18,8 +18,10 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.OneToOne;
 import javax.persistence.CascadeType;
+import javax.servlet.http.HttpServletRequest;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -27,7 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @Table(name = "IMAGE")
-@XmlRootElement
+
 public class Image implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -43,7 +45,7 @@ public class Image implements Serializable {
 
     @Column(name = "filename")
     private String filename;
-    
+
     @Column(name = "content", length = 1000000)
     @Lob
     private byte[] content;
@@ -55,9 +57,9 @@ public class Image implements Serializable {
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date created;
 
-    @OneToOne(mappedBy="image")
+    @OneToOne(mappedBy = "image")
     private Athlete athlete;
-    
+
     public Long getId() {
         return id;
     }
@@ -65,7 +67,7 @@ public class Image implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-    
+
     public Athlete getAthlete() {
         return athlete;
     }
@@ -73,7 +75,7 @@ public class Image implements Serializable {
     public void setAthlete(Athlete athlete) {
         this.athlete = athlete;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -131,7 +133,7 @@ public class Image implements Serializable {
         this.filename = filename;
     }
 
-    public void setContent(byte [] content) {
+    public void setContent(byte[] content) {
         this.content = content;
     }
 
