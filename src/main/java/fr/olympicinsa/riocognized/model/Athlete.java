@@ -4,7 +4,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import javax.persistence.CascadeType;
+import javax.persistence.ElementCollection;
 import javax.persistence.JoinColumn;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -16,6 +20,9 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import javax.servlet.ServletContext;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.servlet.http.HttpServletRequest;
+import org.hibernate.engine.profile.Fetch;
+
+import org.springframework.util.Assert;
 
 @Entity
 @Table(name = "ATHLETE")
@@ -37,12 +44,32 @@ public class Athlete implements Serializable {
     private String sport;
     @Column(name = "AGE")
     private Integer age;
+    
     @JsonIgnore
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "image_id")
-
     private Image image;
+    
+    
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Map<String, String> description = new HashMap<>();
+    
+    
+    public void setDescritption(String name, String value) {
 
+		Assert.hasText(name);
+
+		if (value == null) {
+			this.description.remove(value);
+		} else {
+			this.description.put(name, value);
+		}
+    }
+    
+    public Map<String, String> getDescritpion() {
+		return Collections.unmodifiableMap(description);
+    }
+    
     public Long getId() {
         return id;
     }
