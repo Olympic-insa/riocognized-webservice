@@ -21,4 +21,7 @@ public interface AthleteRepository extends JpaRepository<Athlete, Long> {
     @Query("select u from Athlete u where lower(u.country) like ?1%")
     List<Athlete> findByCountryStartingWith(String sport);
     
+    @Query("select u from Athlete u where lower(u.description[?1]) like ?2%")
+    List<Athlete> findByDescriptionStartingWith(String key, String value);
+    
 }

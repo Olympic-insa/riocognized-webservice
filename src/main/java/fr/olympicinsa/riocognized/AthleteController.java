@@ -65,7 +65,13 @@ public class AthleteController {
     List<Athlete> listAthleteBySportJson(ModelMap model, @PathVariable("sport") String sport) throws JSONException {
         return athleteRepository.findBySportStartingWith(sport.toLowerCase());
     }
-
+    
+    @RequestMapping(value = "/api/athletes/descritption/{key}={value}", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public @ResponseBody
+    List<Athlete> listAthleteBySportJson(ModelMap model, @PathVariable("key") String key, @PathVariable("value") String value) throws JSONException {
+        return athleteRepository.findByDescriptionStartingWith(key.toLowerCase(), value.toLowerCase());
+    }
     @RequestMapping(value = "/api/athletes/country/{country}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
