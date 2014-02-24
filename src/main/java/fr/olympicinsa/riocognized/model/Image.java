@@ -29,7 +29,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  */
 @Entity
 @Table(name = "IMAGE")
-
+@XmlRootElement
 public class Image implements Serializable {
 
     private static final long serialVersionUID = 1L;

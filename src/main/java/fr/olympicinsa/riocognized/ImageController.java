@@ -11,7 +11,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.InternalServerErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -23,9 +25,14 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.multipart.MultipartFile;
 
 import org.apache.commons.io.IOUtils;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
 /**
  *
  * @author alex
@@ -112,8 +119,33 @@ public class ImageController {
     @RequestMapping(value="/api/upload", method=RequestMethod.POST)
     @ResponseBody
     public Image handleFileUpload(@RequestBody Image image){
-        Image created = imageRepository.saveAndFlush(image);
+        Image created = imageRepository.save(image);
         return created;
     }
+    
+    
+    /* Error Handling */
+    
+    @ExceptionHandler(EmptyResultDataAccessException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorMessage handleResourceNotFoundException(EmptyResultDataAccessException e, HttpServletRequest req) {
+        return new ErrorMessage(e);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorMessage handleHttpMessageNotReadableException(HttpMessageNotReadableException e, HttpServletRequest req) {
+        return new ErrorMessage(e);
+    }
+    
+    @ExceptionHandler(NoSuchRequestHandlingMethodException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorMessage handleNotFoundErrorException(InternalServerErrorException e, HttpServletRequest req) {
+        return new ErrorMessage(e);
+    }
+    
 }
 

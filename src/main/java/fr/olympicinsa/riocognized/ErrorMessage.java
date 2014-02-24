@@ -6,7 +6,6 @@
 package fr.olympicinsa.riocognized;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
@@ -15,7 +14,6 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  * @author alex
  */
 
-@XmlRootElement(name = "error")
 public class ErrorMessage {
 
     private Throwable exception;
@@ -34,7 +32,6 @@ public class ErrorMessage {
         this.message = exception.getLocalizedMessage();
     }
 
-    @XmlTransient
     @JsonIgnore
     public Throwable getException() {
         return exception;
