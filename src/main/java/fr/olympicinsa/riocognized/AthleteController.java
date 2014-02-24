@@ -37,7 +37,7 @@ import org.apache.commons.io.IOUtils;
  */
 @Controller
 @ComponentScan("fr.olympicinsa.riocognized.repository")
-public class AthleteController {
+public class AthleteController extends MyExceptionHandler{
 
     @Autowired
     private AthleteRepository athleteRepository;
@@ -120,28 +120,5 @@ public class AthleteController {
     public String deleteUser(@PathVariable("id") Long athleteId) {
         athleteRepository.delete(athleteRepository.findOne(athleteId));
         return "redirect:/";
-    }
-    
-    /* Error Handling */
-    
-    @ExceptionHandler(EmptyResultDataAccessException.class)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorMessage handleResourceNotFoundException(EmptyResultDataAccessException e, HttpServletRequest req) {
-        return new ErrorMessage(e);
-    }
-
-    @ExceptionHandler(InternalServerErrorException.class)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorMessage handleInternalServerErrorException(InternalServerErrorException e, HttpServletRequest req) {
-        return new ErrorMessage(e);
-    }
-    
-    @ExceptionHandler(NoSuchRequestHandlingMethodException.class)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorMessage handleNotFoundErrorException(InternalServerErrorException e, HttpServletRequest req) {
-        return new ErrorMessage(e);
     }
 }
