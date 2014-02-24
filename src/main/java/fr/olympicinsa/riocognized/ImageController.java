@@ -23,6 +23,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.multipart.MultipartFile;
 
 import org.apache.commons.io.IOUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 /**
  *
  * @author alex
@@ -102,6 +105,15 @@ public class ImageController {
         imageRepository.delete(imageId);
 
         return "redirect:/image";
+    }
+        
+    /* API POST Method*/
+    
+    @RequestMapping(value="/api/upload", method=RequestMethod.POST)
+    @ResponseBody
+    public Image handleFileUpload(@RequestBody Image image){
+        Image created = imageRepository.saveAndFlush(image);
+        return created;
     }
 }
 

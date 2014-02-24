@@ -11,11 +11,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.json.JSONException;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 
 import fr.olympicinsa.riocognized.model.*;
 import fr.olympicinsa.riocognized.repository.*;
+
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.InternalServerErrorException;
@@ -39,6 +42,8 @@ public class AthleteController {
     @Autowired
     private AthleteRepository athleteRepository;
 
+    /* API GET Method */
+    
     @RequestMapping(value = "/api/athletes", method = RequestMethod.GET)
     public @ResponseBody
     List<Athlete> listAthleteJson(ModelMap model) throws JSONException {
@@ -78,14 +83,18 @@ public class AthleteController {
     List<Athlete> listAthleteByCountryJson(ModelMap model, @PathVariable("country") String country) throws JSONException {
         return athleteRepository.findByCountryStartingWith(country.toLowerCase());
     }
-
+    
+    /* Web GET Method */
+    
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String listUsers(ModelMap model) {
         model.addAttribute("athlete", new Athlete());
         model.addAttribute("athletes", athleteRepository.findAll());
         return "athlete";
     }
-
+    
+    /* Web POST Method */
+    
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public String addUser(@ModelAttribute("athlete") Athlete athlete, 
                           @RequestParam("file") MultipartFile file, BindingResult result) {
@@ -101,12 +110,7 @@ public class AthleteController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-/*        try {
-            imageRepository.save(image);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
+        
         athlete.setImage(image);
         athleteRepository.save(athlete);
         return "redirect:/";
@@ -117,7 +121,9 @@ public class AthleteController {
         athleteRepository.delete(athleteRepository.findOne(athleteId));
         return "redirect:/";
     }
-
+    
+    /* Error Handling */
+    
     @ExceptionHandler(EmptyResultDataAccessException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
