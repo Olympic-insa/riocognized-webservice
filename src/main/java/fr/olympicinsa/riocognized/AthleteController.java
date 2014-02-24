@@ -50,7 +50,7 @@ public class AthleteController {
         return athleteRepository.findAll();
     }
 
-    @RequestMapping(value = "/api/athletes/name/{name}", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/athletes/name={name}", method = RequestMethod.GET)
      @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
     List<Athlete> listAthleteByNameJson(ModelMap model, @PathVariable("name") String name) throws JSONException {
@@ -64,7 +64,7 @@ public class AthleteController {
         return athleteRepository.findOne(id);
     }
 
-    @RequestMapping(value = "/api/athletes/sport/{sport}", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/athletes/sport={sport}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
     List<Athlete> listAthleteBySportJson(ModelMap model, @PathVariable("sport") String sport) throws JSONException {
@@ -77,7 +77,7 @@ public class AthleteController {
     List<Athlete> listAthleteBySportJson(ModelMap model, @PathVariable("key") String key, @PathVariable("value") String value) throws JSONException {
         return athleteRepository.findByDescriptionStartingWith(key.toLowerCase(), value.toLowerCase());
     }
-    @RequestMapping(value = "/api/athletes/country/{country}", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/athletes/country={country}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
     List<Athlete> listAthleteByCountryJson(ModelMap model, @PathVariable("country") String country) throws JSONException {
