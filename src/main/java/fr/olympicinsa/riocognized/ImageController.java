@@ -23,6 +23,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.multipart.MultipartFile;
 
 import org.apache.commons.io.IOUtils;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 /**
  *
  * @author alex
@@ -31,7 +33,7 @@ import org.apache.commons.io.IOUtils;
 @Controller
 @RequestMapping("/image")
 @ComponentScan("fr.olympicinsa.riocognized.repository")
-public class ImageController {
+public class ImageController extends MyExceptionHandler{
 
     @Autowired
     private ImageRepository imageRepository;
@@ -103,5 +105,15 @@ public class ImageController {
 
         return "redirect:/image";
     }
+        
+    /* API POST Method*/
+    
+    @RequestMapping(value="/api/upload", method=RequestMethod.POST)
+    @ResponseBody
+    public Image handleFileUpload(@RequestBody Image image){
+        Image created = imageRepository.save(image);
+        return created;
+    }
+    
 }
 

@@ -6,18 +6,22 @@
 package fr.olympicinsa.riocognized.model;
 
 import java.io.Serializable;
-import java.sql.Blob;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.persistence.OneToOne;
+import javax.persistence.CascadeType;
+import javax.servlet.http.HttpServletRequest;
+
 import javax.xml.bind.annotation.XmlRootElement;
-import org.omg.CORBA.DATA_CONVERSION;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -53,12 +57,23 @@ public class Image implements Serializable {
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date created;
 
+    @OneToOne(mappedBy = "image")
+    private Athlete athlete;
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Athlete getAthlete() {
+        return athlete;
+    }
+
+    public void setAthlete(Athlete athlete) {
+        this.athlete = athlete;
     }
 
     @Override
@@ -118,7 +133,7 @@ public class Image implements Serializable {
         this.filename = filename;
     }
 
-    public void setContent(byte [] content) {
+    public void setContent(byte[] content) {
         this.content = content;
     }
 

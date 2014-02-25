@@ -11,8 +11,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.json.JSONException;
 
+import java.io.IOException;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+
 import fr.olympicinsa.riocognized.model.*;
 import fr.olympicinsa.riocognized.repository.*;
+
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.InternalServerErrorException;
@@ -21,25 +27,30 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
+import org.springframework.web.multipart.MultipartFile;
 
+import org.apache.commons.io.IOUtils;
 /**
  * Handles requests for the application home page.
  */
 @Controller
 @ComponentScan("fr.olympicinsa.riocognized.repository")
-public class AthleteController {
+public class AthleteController extends MyExceptionHandler{
 
     @Autowired
     private AthleteRepository athleteRepository;
 
+    /* API GET Method */
+    
     @RequestMapping(value = "/api/athletes", method = RequestMethod.GET)
     public @ResponseBody
     List<Athlete> listAthleteJson(ModelMap model) throws JSONException {
         return athleteRepository.findAll();
     }
 
-    @RequestMapping(value = "/api/athletes/name/{name}", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/athletes/name={name}", method = RequestMethod.GET)
      @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
     List<Athlete> listAthleteByNameJson(ModelMap model, @PathVariable("name") String name) throws JSONException {
@@ -53,29 +64,54 @@ public class AthleteController {
         return athleteRepository.findOne(id);
     }
 
-    @RequestMapping(value = "/api/athletes/sport/{sport}", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/athletes/sport={sport}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
     List<Athlete> listAthleteBySportJson(ModelMap model, @PathVariable("sport") String sport) throws JSONException {
         return athleteRepository.findBySportStartingWith(sport.toLowerCase());
     }
-
-    @RequestMapping(value = "/api/athletes/country/{country}", method = RequestMethod.GET)
+    
+    @RequestMapping(value = "/api/athletes/description/{key}={value}", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public @ResponseBody
+    List<Athlete> listAthleteBySportJson(ModelMap model, @PathVariable("key") String key, @PathVariable("value") String value) throws JSONException {
+        return athleteRepository.findByDescriptionStartingWith(key.toLowerCase(), value.toLowerCase());
+    }
+    @RequestMapping(value = "/api/athletes/country={country}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
     List<Athlete> listAthleteByCountryJson(ModelMap model, @PathVariable("country") String country) throws JSONException {
         return athleteRepository.findByCountryStartingWith(country.toLowerCase());
     }
-
+    
+    /* Web GET Method */
+    
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String listUsers(ModelMap model) {
         model.addAttribute("athlete", new Athlete());
         model.addAttribute("athletes", athleteRepository.findAll());
         return "athlete";
     }
-
+    
+    /* Web POST Method */
+    
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String addUser(@ModelAttribute("athlete") Athlete athlete, BindingResult result) {
+    public String addUser(@ModelAttribute("athlete") Athlete athlete, 
+                          @RequestParam("file") MultipartFile file, BindingResult result) {
+
+        Image image = new Image();
+        try {
+            byte[] blob = IOUtils.toByteArray(file.getInputStream());
+            image.setFilename(file.getOriginalFilename());
+            image.setContent(blob);
+            image.setName(athlete.getName());
+            image.setDescription(athlete.getContent());
+            image.setContentType(file.getContentType());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        athlete.setImage(image);
         athleteRepository.save(athlete);
         return "redirect:/";
     }
@@ -84,26 +120,5 @@ public class AthleteController {
     public String deleteUser(@PathVariable("id") Long athleteId) {
         athleteRepository.delete(athleteRepository.findOne(athleteId));
         return "redirect:/";
-    }
-
-    @ExceptionHandler(EmptyResultDataAccessException.class)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorMessage handleResourceNotFoundException(EmptyResultDataAccessException e, HttpServletRequest req) {
-        return new ErrorMessage(e);
-    }
-
-    @ExceptionHandler(InternalServerErrorException.class)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorMessage handleInternalServerErrorException(InternalServerErrorException e, HttpServletRequest req) {
-        return new ErrorMessage(e);
-    }
-    
-    @ExceptionHandler(NoSuchRequestHandlingMethodException.class)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorMessage handleNotFoundErrorException(InternalServerErrorException e, HttpServletRequest req) {
-        return new ErrorMessage(e);
     }
 }

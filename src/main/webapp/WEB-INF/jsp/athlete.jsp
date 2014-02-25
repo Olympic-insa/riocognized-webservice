@@ -30,7 +30,7 @@
                     
                     <div class="add"  style="max-width: 500px; display: inline-block; text-align: left">
                     <h1>Athlètes</h1>
-                    <form:form method="post" action="${contextPath}/add" commandName="athlete" class="form-horizontal">
+                    <form:form method="post" action="${contextPath}/add" commandName="athlete" enctype="multipart/form-data" class="form-horizontal">
                         <div class="control-group">
                             <form:label cssClass="control-label" path="surname">Prénom :</form:label>
                                 <div class="controls">
@@ -68,6 +68,12 @@
                             </div>
                         </div>
                         <div class="control-group">
+                            <form:label cssClass="control-label" path="content">Image :</form:label>
+                            <div class="controls">
+                                <input type="file" name="file" id="file" class="form-control"></input>
+                            </div>
+                        </div>
+                        <div class="control-group">
                             <div class="controls">
                                 <br>
                                 <input type="submit" value="Add Athlete" class="btn-primary btn btn-block"/>
@@ -86,6 +92,7 @@
                                     <th>Age</th>
                                     <th>Sport</th>
                                     <th>Palmares</th>
+                                    <th>Image</th>
                                     <th>&nbsp;</th>
                                 </tr>
                             </thead>
@@ -97,6 +104,10 @@
                                         <td>${athlete.country}</td>
                                         <td>${athlete.sport}</td>
                                         <td>${athlete.content}</td>
+                                        <td>
+                                            <c:if test="${!empty athlete.image}">
+                                            <img
+                                                src="${pageContext.request.contextPath}/image/download/${athlete.image.id}" border="0" width="200px"/></c:if></td>
                                         <td>
                                             <form action="${contextPath}/delete/${athlete.id}" method="post"><input type="submit" class="btn btn-danger btn-block" value="Delete"/></form>
                                         </td>
