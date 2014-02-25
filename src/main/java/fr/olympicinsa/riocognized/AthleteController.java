@@ -71,7 +71,7 @@ public class AthleteController extends MyExceptionHandler{
         return athleteRepository.findBySportStartingWith(sport.toLowerCase());
     }
     
-    @RequestMapping(value = "/api/athletes/descritption/{key}={value}", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/athletes/description/{key}={value}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
     List<Athlete> listAthleteBySportJson(ModelMap model, @PathVariable("key") String key, @PathVariable("value") String value) throws JSONException {
