@@ -17,6 +17,10 @@
     <servlet>
         <servlet-name>dispatcher</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>dispatchOptionsRequest</param-name>
+        <param-value>true</param-value>
+    </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
     
@@ -24,7 +28,16 @@
         <servlet-name>dispatcher</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
-    
+    <filter>
+        <filter-name>cors</filter-name>
+        <filter-class>fr.olympicinsa.riocognized.CorsFilter</filter-class>
+    </filter>
+ 
+    <filter-mapping>
+        <filter-name>cors</filter-name>
+        <url-pattern>/</url-pattern>
+    </filter-mapping>
+
     <session-config>
         <session-timeout>
             30
