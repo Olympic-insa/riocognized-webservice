@@ -26,7 +26,6 @@ import org.springframework.util.Assert;
 
 @Entity
 @Table(name = "ATHLETE")
-@XmlRootElement
 public class Athlete implements Serializable {
 
     @Id

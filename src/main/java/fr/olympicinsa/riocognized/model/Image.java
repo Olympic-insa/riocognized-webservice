@@ -18,6 +18,7 @@ import javax.persistence.Temporal;
 import javax.persistence.OneToOne;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -25,7 +26,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @Table(name = "IMAGE")
-@XmlRootElement
 public class Image implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -41,7 +41,8 @@ public class Image implements Serializable {
 
     @Column(name = "filename")
     private String filename;
-
+    
+    @JsonIgnore
     @Column(name = "content", length = 1000000)
     @Lob
     private byte[] content;
