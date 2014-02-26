@@ -12,7 +12,7 @@
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <glassfish.domain.port>5000</glassfish.domain.port>
+        <glassfish.domain.port>8086</glassfish.domain.port>
         <glassfish.domain.host>192.168.0.12</glassfish.domain.host>
         <glassfish.directory>/opt/glassfish4/glassfish</glassfish.directory>
         <glassfish.user>admin</glassfish.user>
