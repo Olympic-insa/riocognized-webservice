@@ -12,13 +12,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.OneToOne;
-import javax.persistence.CascadeType;
-import javax.servlet.http.HttpServletRequest;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -29,7 +26,6 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  */
 @Entity
 @Table(name = "IMAGE")
-@XmlRootElement
 public class Image implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -45,7 +41,8 @@ public class Image implements Serializable {
 
     @Column(name = "filename")
     private String filename;
-
+    
+    @JsonIgnore
     @Column(name = "content", length = 1000000)
     @Lob
     private byte[] content;

@@ -23,8 +23,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.multipart.MultipartFile;
 
 import org.apache.commons.io.IOUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  *
  * @author alex
@@ -109,8 +111,8 @@ public class ImageController extends MyExceptionHandler{
     /* API POST Method*/
     
     @RequestMapping(value="/api/upload", method=RequestMethod.POST)
-    @ResponseBody
-    public Image handleFileUpload(@RequestBody Image image){
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody public Image handleFileUpload(@RequestBody Image image){
         Image created = imageRepository.save(image);
         return created;
     }
