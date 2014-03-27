@@ -28,7 +28,7 @@ Rio'cognized App RESTFull Webservice.
 
 => return JSON with all athletes
 
-#### Athletes requests
+#### Sports requests
 
 `GET /api/sports`
 
