@@ -30,6 +30,12 @@ Rio'cognized App RESTFull Webservice.
 
 #### Athletes requests
 
+`GET /api/sports`
+
+=> return JSON with all sports
+
+#### Athletes requests
+
 `GET /api/athletes/{id}`
 
 `GET /api/athletes/country={country}`

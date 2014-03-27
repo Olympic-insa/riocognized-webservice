@@ -12,23 +12,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.json.JSONException;
 
 import java.io.IOException;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 
 import fr.olympicinsa.riocognized.model.*;
 import fr.olympicinsa.riocognized.repository.*;
 
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.InternalServerErrorException;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
 import org.springframework.web.multipart.MultipartFile;
 
 import org.apache.commons.io.IOUtils;
@@ -77,6 +69,14 @@ public class AthleteController extends MyExceptionHandler{
     List<Athlete> listAthleteBySportJson(ModelMap model, @PathVariable("key") String key, @PathVariable("value") String value) throws JSONException {
         return athleteRepository.findByDescriptionStartingWith(key.toLowerCase(), value.toLowerCase());
     }
+    
+    @RequestMapping(value = "/api/sports", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public @ResponseBody
+    List<String> listSportJson(ModelMap model) throws JSONException {
+        return athleteRepository.findBySport();
+    }
+    
     @RequestMapping(value = "/api/athletes/country={country}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
