@@ -85,10 +85,10 @@ Rio'cognized App RESTFull Webservice.
 ###### Required format :
 ```javascript
 {
-  name: "Name",
-  descritpion: "metadata string",
-  content: "00444040400024+=",
-  contentType: "jpg",
+  name: "Name", // not required
+  descritpion: "metadata string", // not required
+  content: "00444040400024+=", // base64 format - required
+  contentType: "image/jpeg" 
 }
 ```
 Enjoy ! 
