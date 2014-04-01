@@ -100,8 +100,8 @@
                                 <c:forEach items="${athletes}" var="athlete">
                                     <tr>
                                         <td>${athlete.name}, ${athlete.surname}</td>
+                                        <td>${athlete.country.name}</td>
                                         <td>${athlete.age}</td>
-                                        <td>${athlete.country}</td>
                                         <td>${athlete.sport}</td>
                                         <td>${athlete.content}</td>
                                         <td>

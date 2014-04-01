@@ -12,6 +12,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.JoinColumn;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.OneToOne;
 import org.json.JSONException;
@@ -37,8 +38,8 @@ public class Athlete implements Serializable {
     private String surname;
     @Column(name = "CONTENT")
     private String content;
-    @Column(name = "COUNTRY")
-    private String country;
+    @ManyToOne
+    private Country country;
     @Column(name = "SPORT")
     private String sport;
     @Column(name = "AGE")
@@ -85,11 +86,11 @@ public class Athlete implements Serializable {
         this.name = name;
     }
 
-    public String getCountry() {
+    public Country getCountry() {
         return country;
     }
 
-    public void setCountry(String country) {
+    public void setCountry(Country country) {
         this.country = country;
     }
 
