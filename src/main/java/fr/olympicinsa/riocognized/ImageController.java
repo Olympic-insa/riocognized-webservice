@@ -112,7 +112,8 @@ public class ImageController extends MyExceptionHandler{
     
     @RequestMapping(value="/api/upload", method=RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody public Image handleFileUpload(@RequestBody Image image){
+    @ResponseBody public Image handleFileUpload(@RequestBody final Image image){
+        if (image.getContent().length < 1 || !image.getContentType().startsWith("image")) throw new InvalidContent();
         Image created = imageRepository.save(image);
         return created;
     }
