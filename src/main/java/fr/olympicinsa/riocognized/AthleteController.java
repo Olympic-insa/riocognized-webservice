@@ -33,7 +33,8 @@ public class AthleteController extends MyExceptionHandler{
 
     @Autowired
     private AthleteRepository athleteRepository;
-
+    @Autowired
+    private CountryRepository countryRepository;
     /* API GET Method */
     
     @RequestMapping(value = "/api/athletes", method = RequestMethod.GET)
@@ -75,6 +76,14 @@ public class AthleteController extends MyExceptionHandler{
     public @ResponseBody
     List<String> listSportJson(ModelMap model) throws JSONException {
         return athleteRepository.findBySport();
+    }
+    
+    @RequestMapping(value = "/api/countries", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public @ResponseBody
+    List<Country> listCountryJson(ModelMap model) throws JSONException {
+        List<Country> id = athleteRepository.findByCountry();
+        return countryRepository.findById(id);
     }
     
     @RequestMapping(value = "/api/athletes/country={country}", method = RequestMethod.GET)
