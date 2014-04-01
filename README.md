@@ -34,6 +34,20 @@ Rio'cognized App RESTFull Webservice.
 
 => return JSON with all sports
 
+`GET /api/countries`
+
+=> return JSON with all represented countries
+```javascript
+{
+  id: "FR",
+  name: "France"
+},
+{
+  id: "HU",
+  name: "Hungary"
+}
+```
+
 #### Athletes requests
 
 `GET /api/athletes/{id}`
