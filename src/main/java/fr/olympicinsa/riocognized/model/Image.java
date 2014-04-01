@@ -6,6 +6,8 @@
 package fr.olympicinsa.riocognized.model;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,8 +19,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.OneToOne;
 
-import javax.xml.bind.annotation.XmlRootElement;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  *
@@ -27,7 +29,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 @Entity
 @Table(name = "IMAGE")
 public class Image implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -42,12 +44,11 @@ public class Image implements Serializable {
     @Column(name = "filename")
     private String filename;
     
-    @JsonIgnore
-    @Column(name = "content", length = 1000000)
+    @Column(name = "content", length = 1000000, nullable=false)
     @Lob
     private byte[] content;
-
-    @Column(name = "content_type")
+    
+    @Column(name = "content_type", nullable=false)
     private String contentType;
 
     @Column(name = "created")
@@ -56,7 +57,15 @@ public class Image implements Serializable {
 
     @OneToOne(mappedBy = "image")
     private Athlete athlete;
-
+    
+    public Image() {
+        this.created = new Date();
+    }
+    public String getExtension() {
+        String mimeType = contentType.split("/")[1];
+        return mimeType;
+    }
+    
     public Long getId() {
         return id;
     }
@@ -107,15 +116,21 @@ public class Image implements Serializable {
     }
 
     public String getFilename() {
-        return filename;
+        if (filename != null)
+            return filename;
+        else
+            return "riocognized-"+id+"."+this.getExtension();
     }
-
+    
+    @JsonIgnore
     public byte[] getContent() {
         return content;
     }
 
-    public Date getCreated() {
-        return created;
+    public String getCreated() {
+        DateFormat dateFormat = 
+        new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        return dateFormat.format(created);
     }
 
     public void setName(String name) {
@@ -129,7 +144,8 @@ public class Image implements Serializable {
     public void setFilename(String filename) {
         this.filename = filename;
     }
-
+    
+    @JsonProperty("content")
     public void setContent(byte[] content) {
         this.content = content;
     }
@@ -137,7 +153,7 @@ public class Image implements Serializable {
     public void setCreated(Date created) {
         this.created = created;
     }
-
+    
     public String getContentType() {
         return contentType;
     }
@@ -145,5 +161,5 @@ public class Image implements Serializable {
     public void setContentType(String contentType) {
         this.contentType = contentType;
     }
-
+ 
 }
