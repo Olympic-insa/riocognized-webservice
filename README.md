@@ -46,16 +46,22 @@ Rio'cognized App RESTFull Webservice.
 
 #### Response format
 ##### Application/Json :
-[{
-id: 14,
-name: "Brownlee",
-surname: "Alistair",
-content: "Champion Olympique",
-country: "Royaume-Uni",
-sport: "Triathlon",
-age: 24,
-image_url: "http://olympic-insa.fr.nf:8083/image/download/29",
-}]
+```javascript
+{
+ id: 50,
+ name: "Szilágyi",
+ surname: "Áron",
+ content: "Champion olympique du sabre",
+ country: {
+    id: "HU",
+    name: "Hungary"
+  },
+ sport: "escrime",
+ age: 24,
+ descritpion: { },
+ image_url: "http://olympic-insa.fr.nf:8083/image/download/51"
+}
+```
 
 #### Image Request
 
@@ -63,13 +69,14 @@ image_url: "http://olympic-insa.fr.nf:8083/image/download/29",
 `POST image/api/upload`
 
 ###### Required format :
-[{
-name: "Name",
-descritpion: "metadata string",
-content: "00444040400024+=",
-contentType: "jpg",
-}]
-
+```javascript
+{
+  name: "Name",
+  descritpion: "metadata string",
+  content: "00444040400024+=",
+  contentType: "jpg",
+}
+```
 Enjoy ! 
 
 ======================
