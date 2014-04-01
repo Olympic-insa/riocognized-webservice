@@ -49,4 +49,14 @@ public class MyExceptionHandler {
     public ErrorMessage handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e, HttpServletRequest req) {
         return new ErrorMessage("METHOD_NOT_ALLOWED");
     }
+    
+    @ExceptionHandler(InvalidContent.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+    public ErrorMessage handleInvalidContent(InvalidContent e, HttpServletRequest req) {
+        return new ErrorMessage("INVALID_OR_EMPTY_CONTENT");
+    }
+  
+    public class InvalidContent extends RuntimeException {
+    }
 }
