@@ -86,9 +86,30 @@ Rio'cognized App RESTFull Webservice.
 ```javascript
 {
   name: "Name", // not required
-  descritpion: "metadata string", // not required
+  description: "metadata string", // not required
   content: "00444040400024+=", // base64 format - required
-  contentType: "image/jpeg" 
+  contentType: "image/jpeg" , //MIME Type - required (image/*)
+}
+```
+###### Response
+```Javascript
+201 Created
+{
+   id: 86
+  name: null
+  description: "metadata string"
+  filename: "riocognized-86.png"
+  contentType: "image/png"
+  created: "04/01/2014 16:53:29"
+  athlete: null
+  extension: "png"
+}
+```
+######Error Handling (invalid JSON, no content, invalid content)
+```Javascript
+415 Unsupported Media Type
+{
+  message: "INVALID_OR_EMPTY_CONTENT"
 }
 ```
 Enjoy ! 
