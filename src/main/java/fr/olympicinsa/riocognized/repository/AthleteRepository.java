@@ -4,6 +4,7 @@ package fr.olympicinsa.riocognized.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import fr.olympicinsa.riocognized.model.Athlete;
+import fr.olympicinsa.riocognized.model.Country;
 import fr.olympicinsa.riocognized.model.Sport;
 import java.util.List;
 import org.springframework.data.jpa.repository.Query;
@@ -27,4 +28,7 @@ public interface AthleteRepository extends JpaRepository<Athlete, Long> {
     
     @Query("select u.sport from Athlete u group by u.sport")
     List<String> findBySport();
+    
+    @Query("select u.country.id from Athlete u group by u.country.id")
+    List<Country> findByCountry();
 }
