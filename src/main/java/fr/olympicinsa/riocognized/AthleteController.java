@@ -40,7 +40,7 @@ public class AthleteController extends MyExceptionHandler{
     @RequestMapping(value = "/api/athletes", method = RequestMethod.GET)
     public @ResponseBody
     List<Athlete> listAthleteJson(ModelMap model) throws JSONException {
-        return athleteRepository.findAll();
+        return athleteRepository.findAllOrderByName();
     }
 
     @RequestMapping(value = "/api/athletes/name={name}", method = RequestMethod.GET)
