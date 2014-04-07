@@ -2,6 +2,25 @@ Rio'Cognized Webservice
 ======================
 
 Rio'cognized App RESTFull Webservice. 
+[1] http://lynxlabs.fr.nf
+
+#### Face Detetction API
+
+###### Facial Detection based on Viola & Jones method.
+####### Pass full image URL as argument :
+```GET recognition/api/detect?url={http://urltoyourimage.co/image.jpg}```
+
+###### Response
+```Javascript
+200 OK
+{
+  result: http://lynxlabs.fr.nf/opencv/image.jpg //result image
+  detected: 2 //number of face detected
+  haar: haar.xml //Haar Classifier used for detection
+  url: "http://urlToYouImage.co/yourImage.png"
+
+}
+```
 
 ## Web GUI
 `GET /`
@@ -116,3 +135,5 @@ Enjoy !
 
 ======================
 Olympic-INSA Team
+
+[1] http://lynxlabs.fr.nf:8083
