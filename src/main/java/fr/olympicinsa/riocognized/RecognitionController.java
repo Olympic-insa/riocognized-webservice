@@ -72,7 +72,7 @@ public class RecognitionController extends MyExceptionHandler{
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody public String detectFaces(){
         
-        System.load("/opt/openCV/libopencv_java248.so");
+        //System.load("/opt/openCV/libopencv_java248.so");
         //System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         String haar = "/opt/openCV/haarcascade_frontalface_alt.xml";
         String image = "/opt/openCV/image.jpg";
