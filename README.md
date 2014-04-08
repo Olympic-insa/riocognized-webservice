@@ -11,7 +11,7 @@ Rio'cognized App RESTFull Webservice.
 ###### Pass full image URL as argument :
 `GET recognition/api/detect?url={http://urltoyourimage.co/image.jpg}`
 ###### Try it!
-http://lynxlabs.fr.nf:8085/recognition/api/detect?url=http://www.ouest-france.fr/sites/default/files/styles/image-article-detail/public/2014/04/06/des-primes-scandaleusement-faibles.jpg
+http://lynxlabs.fr.nf:8083/recognition/api/detect?url=http://www.ouest-france.fr/sites/default/files/styles/image-article-detail/public/2014/04/06/des-primes-scandaleusement-faibles.jpg
 
 ###### Response
 ```Javascript
