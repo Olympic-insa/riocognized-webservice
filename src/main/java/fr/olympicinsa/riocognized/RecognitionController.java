@@ -18,7 +18,6 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import javax.imageio.ImageIO;
@@ -31,10 +30,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -87,7 +84,7 @@ public class RecognitionController extends MyExceptionHandler {
         String haar = "/opt/openCV/haarcascade_frontalface_alt.xml";
         String image = "/opt/openCV/image.jpg";
         String dest = "/opt/openCV/imagedetect.jpg";
-        FaceDetector detector = new FaceDetector(haar);
+        FaceDetector detector = new FaceDetector();
         int detected = detector.detectFaces(image, dest);
 
         JSONArray faceArray = new JSONArray();
@@ -107,7 +104,7 @@ public class RecognitionController extends MyExceptionHandler {
         
         String haar = "/opt/openCV/haarcascade_frontalface_alt.xml";
         String dest = "/var/www/opencv/result.jpg";
-        FaceDetector detector = new FaceDetector(haar);
+        FaceDetector detector = new FaceDetector();
         BufferedImage imageBuffered;
         ByteArrayOutputStream bais = new ByteArrayOutputStream();
         Mat newMat;
