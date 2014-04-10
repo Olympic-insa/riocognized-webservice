@@ -40,8 +40,8 @@ public class Athlete implements Serializable {
     private String content;
     @ManyToOne
     private Country country;
-    @Column(name = "SPORT")
-    private String sport;
+    @ManyToOne
+    private Sport sport;
     @Column(name = "AGE")
     private Integer age;
     
@@ -118,18 +118,11 @@ public class Athlete implements Serializable {
         this.id = id;
     }
 
-//	public void setSportID(Sport sportID) {
-//		this.sportID = sportID;
-//	}
-//	
-//	public Sport getSportID() {
-//		return this.sportID;
-//	}
-    public void setSport(String sport) {
+    public void setSport(Sport sport) {
         this.sport = sport;
     }
 
-    public String getSport() {
+    public Sport getSport() {
         return this.sport;
     }
 
