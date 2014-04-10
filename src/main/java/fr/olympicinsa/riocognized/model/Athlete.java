@@ -6,12 +6,16 @@ import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.ElementCollection;
 import javax.persistence.JoinColumn;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.OneToOne;
@@ -45,6 +49,10 @@ public class Athlete implements Serializable {
     @Column(name = "AGE")
     private Integer age;
     
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "athlete_timetable", joinColumns = { @JoinColumn(name = "athlete_id") }, inverseJoinColumns = { @JoinColumn(name = "timetable_id") })
+    private Set<Timetable> timetables = new HashSet<Timetable>();
+        
     @JsonIgnore
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "image_id")
@@ -138,4 +146,12 @@ public class Athlete implements Serializable {
         return "http://olympic-insa.fr.nf:8083/image/download/"+image.getId();
 
     }
+    
+    public Set<Timetable> getTimetables() {
+		return timetables;
+	}
+ 
+	public void setTimetable(Set<Timetable> timetables) {
+		this.timetables = timetables;
+	}
 }
