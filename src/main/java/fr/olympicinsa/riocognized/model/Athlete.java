@@ -1,27 +1,33 @@
 package fr.olympicinsa.riocognized.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.ElementCollection;
 import javax.persistence.JoinColumn;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.OneToOne;
-import org.json.JSONException;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
-import javax.servlet.ServletContext;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.servlet.http.HttpServletRequest;
-import org.hibernate.engine.profile.Fetch;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import static org.apache.xalan.lib.ExsltDatetime.year;
 
 import org.springframework.util.Assert;
 
@@ -40,36 +46,49 @@ public class Athlete implements Serializable {
     private String content;
     @ManyToOne
     private Country country;
-    @Column(name = "SPORT")
-    private String sport;
-    @Column(name = "AGE")
-    private Integer age;
-    
+    @ManyToOne
+    private Sport sport;
+    @Temporal(TemporalType.DATE)
+    private Date dOb;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "athlete_timetable", joinColumns = {
+        @JoinColumn(name = "athlete_id")}, inverseJoinColumns = {
+        @JoinColumn(name = "timetable_id")})
+    private Set<Timetable> timetables = new HashSet<Timetable>();
+
     @JsonIgnore
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "image_id")
     private Image image;
-    
-    
+
     @ElementCollection(fetch = FetchType.EAGER)
     private Map<String, String> description = new HashMap<>();
-    
-    
-    public void setDescritption(String name, String value) {
 
-		Assert.hasText(name);
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    public Date getDoB() {
+        return this.dOb;
+    }
 
-		if (value == null) {
-			this.description.remove(value);
-		} else {
-			this.description.put(name, value);
-		}
+    public void setDoB(Date dOb) {
+        this.dOb = dOb;
     }
-    
-    public Map<String, String> getDescritpion() {
-		return Collections.unmodifiableMap(description);
+
+    public void setDescription(String name, String value) {
+
+        Assert.hasText(name);
+
+        if (value == null) {
+            this.description.remove(value);
+        } else {
+            this.description.put(name, value);
+        }
     }
-    
+
+    public Map<String, String> getDescription() {
+        return Collections.unmodifiableMap(description);
+    }
+
     public Long getId() {
         return id;
     }
@@ -118,31 +137,42 @@ public class Athlete implements Serializable {
         this.id = id;
     }
 
-//	public void setSportID(Sport sportID) {
-//		this.sportID = sportID;
-//	}
-//	
-//	public Sport getSportID() {
-//		return this.sportID;
-//	}
-    public void setSport(String sport) {
+    public void setSport(Sport sport) {
         this.sport = sport;
     }
 
-    public String getSport() {
+    public Sport getSport() {
         return this.sport;
     }
-
-    public void setAge(Integer age) {
-        this.age = age;
-    }
-
+    
+    @JsonProperty("age")
     public Integer getAge() {
-        return this.age;
+        Date current = new Date();
+        final Calendar calend = new GregorianCalendar();
+        calend.set(Calendar.HOUR_OF_DAY, 0);
+        calend.set(Calendar.MINUTE, 0);
+        calend.set(Calendar.SECOND, 0);
+        calend.set(Calendar.MILLISECOND, 0);
+        int result = 0;
+        if (dOb != null) {
+            calend.setTimeInMillis(current.getTime() - dOb.getTime());
+            result = calend.get(Calendar.YEAR) - 1970;
+            result += (float) calend.get(Calendar.MONTH) / (float) 12;
+        }
+        return result;
     }
+    
     @JsonProperty("image_url")
     public String getURL() {
         return "http://olympic-insa.fr.nf:8083/image/download/"+image.getId();
 
     }
+    
+    public Set<Timetable> getTimetables() {
+		return timetables;
+	}
+ 
+	public void setTimetable(Set<Timetable> timetables) {
+		this.timetables = timetables;
+	}
 }

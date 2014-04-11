@@ -102,7 +102,7 @@
                                         <td>${athlete.name}, ${athlete.surname}</td>
                                         <td>${athlete.country.name}</td>
                                         <td>${athlete.age}</td>
-                                        <td>${athlete.sport}</td>
+                                        <td style="text-transform: capitalize">${athlete.sport.id}</td>
                                         <td>${athlete.content}</td>
                                         <td>
                                             <c:if test="${!empty athlete.image}">

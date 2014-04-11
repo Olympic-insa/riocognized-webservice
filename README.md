@@ -49,6 +49,21 @@ http://lynxlabs.fr.nf:8083/recognition/api/detect?url=http://www.ouest-france.fr
 `GET /api/athletes`
 
 => return JSON with all athletes
+```javascript
+200 OK
+{
+  id: 14,
+  name: "Brownlee",
+  surname: "Alistair",
+  country: 
+  {
+    id: "GB",
+    name: "United Kingdom"
+  },
+  sport: "triathlon"
+  image_url: "http://olympic-insa.fr.nf:8083/image/download/29"
+}
+```
 
 #### Sports requests
 
@@ -83,19 +98,51 @@ http://lynxlabs.fr.nf:8083/recognition/api/detect?url=http://www.ouest-france.fr
 #### Response format
 ##### Application/Json :
 ```javascript
+200 OK
 {
- id: 50,
- name: "Szilágyi",
- surname: "Áron",
- content: "Champion olympique du sabre",
- country: {
-    id: "HU",
-    name: "Hungary"
+  id: 14,
+  name: "Brownlee",
+  surname: "Alistair",
+  content: "Champion Olympique",
+  country: 
+  {
+    id: "GB",
+    name: "United Kingdom"
   },
- sport: "escrime",
- age: 24,
- descritpion: { },
- image_url: "http://olympic-insa.fr.nf:8083/image/download/51"
+  sport: 
+  {
+    id: "triathlon"
+  },
+  timetables: 
+  [
+    {
+      id: 2,
+      sport: 
+      {       
+        id: "triathlon"
+      },
+      position: 
+      {
+        id: 3,
+        type: "outdoor",
+        latitude: -22.9644,
+        longitude: -43.1799,
+        description: "copacabana beach"
+      },
+      startDate: "2016-08-01,14:00",
+      endDate: "2016-08-01,18:00",
+      description: "men triathlon"
+      }
+  ],
+  startDate: "1988-04-23",
+  descritpion: 
+  {
+    fit: "skinny",
+    race_suit: "blue",
+    color: "white"
+  },
+  age: 25,
+  image_url: "http://olympic-insa.fr.nf:8083/image/download/29"
 }
 ```
 
@@ -117,7 +164,7 @@ http://lynxlabs.fr.nf:8083/recognition/api/detect?url=http://www.ouest-france.fr
 ```Javascript
 201 Created
 {
-   id: 86
+  id: 86
   name: null
   description: "metadata string"
   filename: "riocognized-86.png"
@@ -138,8 +185,6 @@ Enjoy !
 
 ======================
 Olympic-INSA Team
-
-[1] http://lynxlabs.fr.nf:8083
 
 
   [1]: http://lynxlabs.fr.nf:8083
