@@ -5,8 +5,8 @@
  */
 package fr.olympicinsa.riocognized;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.xml.bind.annotation.XmlElement;
-import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *

@@ -1,5 +1,6 @@
 package fr.olympicinsa.riocognized.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.io.Serializable;
@@ -26,7 +27,7 @@ public class Timetable implements Serializable {
 	private Date startDate;
     @Temporal(TemporalType.TIMESTAMP)
 	private Date endDate;
-    
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd,HH:00", timezone="GMT+2")
 	public Date getStartDate() {
 		return this.startDate;
 	}
@@ -35,7 +36,8 @@ public class Timetable implements Serializable {
 		this.startDate = startDate;
 	}
     
-    	public Date getEndDate() {
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd,HH:00", timezone="GMT+2")
+    public Date getEndDate() {
 		return this.endDate;
 	}
  

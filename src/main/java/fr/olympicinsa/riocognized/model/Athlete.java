@@ -1,5 +1,7 @@
 package fr.olympicinsa.riocognized.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -19,13 +21,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.OneToOne;
-import org.json.JSONException;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
-import javax.servlet.ServletContext;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.servlet.http.HttpServletRequest;
-import org.hibernate.engine.profile.Fetch;
 
 import org.springframework.util.Assert;
 
