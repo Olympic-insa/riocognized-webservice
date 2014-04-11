@@ -55,14 +55,15 @@ public class AthleteController extends MyExceptionHandler {
     String listDetailAthleteJson(ModelMap model) throws JSONException {
         JSONArray athleteArray = new JSONArray();
         for (Athlete athlete : athleteRepository.findAllOrderByName()) {
+            JSONObject countryJSON = new JSONObject();
+            countryJSON.put("id",athlete.getCountry().getId());
+            countryJSON.put("name",athlete.getCountry().getName());
             JSONObject athleteJSON = new JSONObject();
             athleteJSON.put("id", athlete.getId());
             athleteJSON.put("name", athlete.getName());
             athleteJSON.put("surname", athlete.getSurname());
-            athleteJSON.put("country", athlete.getCountry().getName());
+            athleteJSON.put("country", countryJSON);
             athleteJSON.put("sport", athlete.getSport().getId());
-            athleteJSON.put("content", athlete.getContent());
-            athleteJSON.put("age", athlete.getAge());
             athleteJSON.put("image_url", athlete.getURL());
             athleteArray.put(athleteJSON);
         }
