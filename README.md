@@ -49,6 +49,21 @@ http://lynxlabs.fr.nf:8083/recognition/api/detect?url=http://www.ouest-france.fr
 `GET /api/athletes`
 
 => return JSON with all athletes
+```javascript
+200 OK
+{
+  id: 14,
+  name: "Brownlee",
+  surname: "Alistair",
+  country: 
+  {
+    id: "GB",
+    name: "United Kingdom"
+  },
+  sport: "triathlon"
+  image_url: "http://olympic-insa.fr.nf:8083/image/download/29"
+}
+```
 
 #### Sports requests
 
@@ -149,7 +164,7 @@ http://lynxlabs.fr.nf:8083/recognition/api/detect?url=http://www.ouest-france.fr
 ```Javascript
 201 Created
 {
-   id: 86
+  id: 86
   name: null
   description: "metadata string"
   filename: "riocognized-86.png"
@@ -170,8 +185,6 @@ Enjoy !
 
 ======================
 Olympic-INSA Team
-
-[1] http://lynxlabs.fr.nf:8083
 
 
   [1]: http://lynxlabs.fr.nf:8083
