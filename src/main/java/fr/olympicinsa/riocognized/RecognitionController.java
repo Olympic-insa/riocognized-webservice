@@ -32,6 +32,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -101,14 +102,14 @@ public class RecognitionController extends MyExceptionHandler {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public String detectFacesURL(@RequestParam("url") String url) {
-        
+
         String haar = "/opt/openCV/haarcascade_frontalface_alt.xml";
         String dest = "/var/www/opencv/result.jpg";
         FaceDetector detector = new FaceDetector();
         BufferedImage imageBuffered;
         ByteArrayOutputStream bais = new ByteArrayOutputStream();
         Mat newMat;
-        
+
         try {
             URL u = new URL(url);
             int contentLength = u.openConnection().getContentLength();
@@ -142,6 +143,20 @@ public class RecognitionController extends MyExceptionHandler {
             //Content is not an image
             throw new InvalidContent();
         }
+    }
+    
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/api", method = RequestMethod.GET)
+    public @ResponseBody
+    String getAllSeries() throws InterruptedException {
+        Thread.sleep(9000);	//pause to better show sync/async RestTemplate behavior
+        JSONArray faceArray = new JSONArray();
+        JSONObject faceJSON = new JSONObject();
+        faceJSON.put("image", "/opt/openCV/image.png");
+        faceJSON.put("result", "Athlete found !");
+        faceJSON.put("detected", "1");
+        faceArray.put(faceJSON);
+        return faceArray.toString();
     }
 
 }
