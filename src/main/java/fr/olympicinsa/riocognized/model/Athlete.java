@@ -27,7 +27,6 @@ import javax.persistence.Table;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import static org.apache.xalan.lib.ExsltDatetime.year;
 
 import org.springframework.util.Assert;
 
