@@ -15,6 +15,8 @@ import java.io.IOException;
 
 import fr.olympicinsa.riocognized.model.*;
 import fr.olympicinsa.riocognized.repository.*;
+import fr.olympicinsa.riocognized.service.AthleteService;
+import fr.olympicinsa.riocognized.service.CountryService;
 
 import java.util.List;
 import org.springframework.context.annotation.ComponentScan;
@@ -35,26 +37,26 @@ import org.json.JSONObject;
 public class AthleteController extends MyExceptionHandler {
 
     @Autowired
-    private AthleteRepository athleteRepository;
+    private AthleteService athleteService;
     @Autowired
-    private CountryRepository countryRepository;
+    private CountryService countryService;
     /* API GET Method */
 
     @RequestMapping(value = "/api/athletes/full", method = RequestMethod.GET)
     public @ResponseBody
     List<Athlete> listAthleteJson(ModelMap model, @RequestParam(value = "full", required = false, defaultValue = "0") int full) throws JSONException {
         if (full == 1) {
-            return athleteRepository.findAllOrderByName();
+            return athleteService.findAllOrderByName();
         }
 
-        return athleteRepository.findAllOrderByName();
+        return athleteService.findAllOrderByName();
     }
 
     @RequestMapping(value = "/api/athletes", method = RequestMethod.GET)
     public @ResponseBody
     String listDetailAthleteJson(ModelMap model) throws JSONException {
         JSONArray athleteArray = new JSONArray();
-        for (Athlete athlete : athleteRepository.findAllOrderByName()) {
+        for (Athlete athlete : athleteService.findAllOrderByName()) {
             JSONObject countryJSON = new JSONObject();
             countryJSON.put("id",athlete.getCountry().getId());
             countryJSON.put("name",athlete.getCountry().getName());
@@ -74,57 +76,57 @@ public class AthleteController extends MyExceptionHandler {
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
     List<Athlete> listAthleteByNameJson(ModelMap model, @PathVariable("name") String name) throws JSONException {
-        return athleteRepository.findByNameStartingWith(name.toLowerCase());
+        return athleteService.findByNameStartingWith(name.toLowerCase());
     }
 
     @RequestMapping(value = "/api/athletes/{id}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
     Athlete athleteByIdJson(ModelMap model, @PathVariable("id") long id) throws JSONException {
-        return athleteRepository.findOne(id);
+        return athleteService.findOne(id);
     }
 
     @RequestMapping(value = "/api/athletes/sport={sport}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
     List<Athlete> listAthleteBySportJson(ModelMap model, @PathVariable("sport") String sport) throws JSONException {
-        return athleteRepository.findBySportStartingWith(sport.toLowerCase());
+        return athleteService.findBySportStartingWith(sport.toLowerCase());
     }
 
     @RequestMapping(value = "/api/athletes/description/{key}={value}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
     List<Athlete> listAthleteBySportJson(ModelMap model, @PathVariable("key") String key, @PathVariable("value") String value) throws JSONException {
-        return athleteRepository.findByDescriptionStartingWith(key.toLowerCase(), value.toLowerCase());
+        return athleteService.findByDescriptionStartingWith(key.toLowerCase(), value.toLowerCase());
     }
 
     @RequestMapping(value = "/api/sports", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
     List<String> listSportJson(ModelMap model) throws JSONException {
-        return athleteRepository.findBySport();
+        return athleteService.findBySport();
     }
 
     @RequestMapping(value = "/api/countries", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
     List<Country> listCountryJson(ModelMap model) throws JSONException {
-        List<Country> id = athleteRepository.findByCountry();
-        return countryRepository.findById(id);
+        List<Country> id = athleteService.findByCountry();
+        return countryService.findById(id);
     }
 
     @RequestMapping(value = "/api/athletes/country={country}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
     List<Athlete> listAthleteByCountryJson(ModelMap model, @PathVariable("country") String country) throws JSONException {
-        return athleteRepository.findByCountryStartingWith(country.toLowerCase());
+        return athleteService.findByCountryStartingWith(country.toLowerCase());
     }
 
     /* Web GET Method */
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String listUsers(ModelMap model) {
         model.addAttribute("athlete", new Athlete());
-        model.addAttribute("athletes", athleteRepository.findAll());
+        model.addAttribute("athletes", athleteService.findAllOrderByName());
         return "athlete";
     }
 
@@ -146,13 +148,13 @@ public class AthleteController extends MyExceptionHandler {
         }
 
         athlete.setImage(image);
-        athleteRepository.save(athlete);
+        athleteService.save(athlete);
         return "redirect:/";
     }
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public String deleteUser(@PathVariable("id") Long athleteId) {
-        athleteRepository.delete(athleteRepository.findOne(athleteId));
+        athleteService.delete(athleteService.findOne(athleteId));
         return "redirect:/";
     }
 }
