@@ -3,9 +3,6 @@ package fr.olympicinsa.riocognized.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Collections;
@@ -13,21 +10,24 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
-import javax.persistence.JoinColumn;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
 import org.springframework.util.Assert;
 
 @Entity
@@ -49,7 +49,7 @@ public class Athlete implements Serializable {
     private Sport sport;
     @Temporal(TemporalType.DATE)
     private Date dOb;
-        
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "athlete_timetable", joinColumns = {
         @JoinColumn(name = "athlete_id")}, inverseJoinColumns = {
@@ -144,6 +144,19 @@ public class Athlete implements Serializable {
         return this.sport;
     }
     
+    @JsonProperty("racing")
+    public Boolean isRacing() {
+        Boolean racing = false;
+        Iterator iter = this.timetables.iterator();
+        Date now = new Date();
+        while (iter.hasNext()) {
+            Timetable timetable = (Timetable) iter.next();
+            if ( (now.compareTo(timetable.getEndDate()) < 0) && (now.compareTo(timetable.getStartDate()) > 0))
+                racing = true;
+        }
+        return racing;
+    }
+
     @JsonProperty("age")
     public Integer getAge() {
         Date current = new Date();
@@ -160,18 +173,18 @@ public class Athlete implements Serializable {
         }
         return result;
     }
-    
+
     @JsonProperty("image_url")
     public String getURL() {
-        return "http://olympic-insa.fr.nf:8083/image/download/"+image.getId();
+        return "http://olympic-insa.fr.nf:8083/image/download/" + image.getId();
 
     }
-    
+
     public Set<Timetable> getTimetables() {
-		return timetables;
-	}
- 
-	public void setTimetable(Set<Timetable> timetables) {
-		this.timetables = timetables;
-	}
+        return timetables;
+    }
+
+    public void setTimetable(Set<Timetable> timetables) {
+        this.timetables = timetables;
+    }
 }
