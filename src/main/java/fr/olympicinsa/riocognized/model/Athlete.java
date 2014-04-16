@@ -49,7 +49,7 @@ public class Athlete implements Serializable {
     private Sport sport;
     @Temporal(TemporalType.DATE)
     private Date dOb;
-
+        
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "athlete_timetable", joinColumns = {
         @JoinColumn(name = "athlete_id")}, inverseJoinColumns = {

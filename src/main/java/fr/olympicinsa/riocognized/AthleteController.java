@@ -19,6 +19,7 @@ import fr.olympicinsa.riocognized.service.AthleteService;
 import fr.olympicinsa.riocognized.service.CountryService;
 
 import java.util.List;
+import java.util.Map;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -54,9 +55,9 @@ public class AthleteController extends MyExceptionHandler {
 
     @RequestMapping(value = "/api/athletes", method = RequestMethod.GET)
     public @ResponseBody
-    String listDetailAthleteJson(ModelMap model) throws JSONException {
+    String listDetailAthleteJson(ModelMap model, @RequestParam Map<String,String> param) throws JSONException {
         JSONArray athleteArray = new JSONArray();
-        for (Athlete athlete : athleteService.findAllOrderByName()) {
+        for (Athlete athlete : athleteService.findByDescription(param)) {
             JSONObject countryJSON = new JSONObject();
             countryJSON.put("id",athlete.getCountry().getId());
             countryJSON.put("name",athlete.getCountry().getName());
@@ -78,7 +79,14 @@ public class AthleteController extends MyExceptionHandler {
     List<Athlete> listAthleteByNameJson(ModelMap model, @PathVariable("name") String name) throws JSONException {
         return athleteService.findByNameStartingWith(name.toLowerCase());
     }
-
+    
+    @RequestMapping(value = "/api/athletes/desc", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public @ResponseBody
+    List<Athlete> listAthleteByDesc(ModelMap model, @RequestParam Map<String,String> param) throws JSONException {
+        return athleteService.findByDescription(param);
+    }
+    
     @RequestMapping(value = "/api/athletes/{id}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
