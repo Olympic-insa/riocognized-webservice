@@ -98,7 +98,14 @@ http://lynxlabs.fr.nf:8083/recognition/api/detect?url=http://www.ouest-france.fr
 ```
 GET /api/athletes?{criteria}={name}
 
-country, sport, gender, color, fit, race_suit, hair
+country, char(2) : do you know his sport ?
+sport, varchar(50) : do you know his nationality ?
+gender, (M/F) : male or female.
+color, varchar(50)
+fit, varchar(50) : athlete's fit (small, tall, skinny, strong).
+race_suit, varchar(50) : athlete's race suit dominant color.
+hair, varchar(50) : athlete's hair color.
+racing, true/false : is athlete currently racing.
 
 ```
 
