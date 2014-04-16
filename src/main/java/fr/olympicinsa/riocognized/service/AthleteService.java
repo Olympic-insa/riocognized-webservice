@@ -7,6 +7,7 @@ import fr.olympicinsa.riocognized.model.Athlete;
 import fr.olympicinsa.riocognized.model.Country;
 import fr.olympicinsa.riocognized.model.QAthlete;
 import fr.olympicinsa.riocognized.repository.AthleteRepository;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -48,7 +49,17 @@ public class AthleteService {
     public List<Athlete> findByDescription(Map m) {
         OrderSpecifier<String> sortOrder = QAthlete.athlete.name.asc();
 		Predicate predicate = toPredicate(m);
-		return  (List<Athlete>) athleteRepository.findAll(predicate, sortOrder);
+                List<Athlete> result = (List<Athlete>) athleteRepository.findAll(predicate, sortOrder);
+                if ( m.containsKey("racing") && ( m.get("racing").equals("false") | m.get("racing").equals("true") )) {
+                    Boolean bool =  Boolean.valueOf(m.get("racing").toString());
+                    Iterator newResult = result.iterator();
+                    while (newResult.hasNext()) {
+                        Athlete athlete = (Athlete) newResult.next();
+                        if (athlete.isRacing() != bool)
+                            newResult.remove();
+                    }
+                }
+		return result;
 	}
     
     private Predicate toPredicate(Map m) {
