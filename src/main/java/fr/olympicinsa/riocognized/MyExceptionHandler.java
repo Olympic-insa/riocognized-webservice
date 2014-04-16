@@ -50,6 +50,13 @@ public class MyExceptionHandler {
         return new ErrorMessage("METHOD_NOT_ALLOWED");
     }
     
+    @ExceptionHandler(InterruptedException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.REQUEST_TIMEOUT)
+    public ErrorMessage handleInterruptedException(HttpRequestMethodNotSupportedException e, HttpServletRequest req) {
+        return new ErrorMessage("METHOD_NOT_ALLOWED");
+    }
+    
     @ExceptionHandler(InvalidContent.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
