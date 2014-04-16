@@ -85,7 +85,7 @@ http://lynxlabs.fr.nf:8083/recognition/api/detect?url=http://www.ouest-france.fr
 }
 ```
 
-#### Athletes requests
+#### Athletes advanced query
 
 `GET /api/athletes/{id}`
 
@@ -94,6 +94,14 @@ http://lynxlabs.fr.nf:8083/recognition/api/detect?url=http://www.ouest-france.fr
 `GET /api/athletes/sport={sport}`
 
 `GET /api/athletes/name={name}`
+
+```
+GET /api/athletes?{criteria}={name}
+
+country, sport, gender, color, fit, race_suit, hair
+
+```
+
 
 #### Response format
 ##### Application/Json :
