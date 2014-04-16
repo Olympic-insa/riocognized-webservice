@@ -80,13 +80,6 @@ public class AthleteController extends MyExceptionHandler {
         return athleteService.findByNameStartingWith(name.toLowerCase());
     }
     
-    @RequestMapping(value = "/api/athletes/desc", method = RequestMethod.GET)
-    @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody
-    List<Athlete> listAthleteByDesc(ModelMap model, @RequestParam Map<String,String> param) throws JSONException {
-        return athleteService.findByDescription(param);
-    }
-    
     @RequestMapping(value = "/api/athletes/{id}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
@@ -101,12 +94,6 @@ public class AthleteController extends MyExceptionHandler {
         return athleteService.findBySportStartingWith(sport.toLowerCase());
     }
 
-    @RequestMapping(value = "/api/athletes/description/{key}={value}", method = RequestMethod.GET)
-    @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody
-    List<Athlete> listAthleteBySportJson(ModelMap model, @PathVariable("key") String key, @PathVariable("value") String value) throws JSONException {
-        return athleteService.findByDescriptionStartingWith(key.toLowerCase(), value.toLowerCase());
-    }
 
     @RequestMapping(value = "/api/sports", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
