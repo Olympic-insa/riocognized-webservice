@@ -3,6 +3,7 @@ package fr.olympicinsa.riocognized.service;
 import com.mysema.query.types.OrderSpecifier;
 import com.mysema.query.types.Predicate;
 import com.mysema.query.types.expr.BooleanExpression;
+import fr.olympicinsa.riocognized.exception.MyExceptionHandler.TooManyResultException;
 import fr.olympicinsa.riocognized.model.Athlete;
 import fr.olympicinsa.riocognized.model.Country;
 import fr.olympicinsa.riocognized.model.QAthlete;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,6 +61,10 @@ public class AthleteService {
                             newResult.remove();
                     }
                 }
+                if (result.isEmpty()) 
+                    throw new EmptyResultDataAccessException(5) ;
+                if (result.size() > 5) 
+                    throw new TooManyResultException() ;
 		return result;
 	}
     

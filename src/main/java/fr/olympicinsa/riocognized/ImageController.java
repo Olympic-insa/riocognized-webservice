@@ -5,6 +5,7 @@
  */
 package fr.olympicinsa.riocognized;
 
+import fr.olympicinsa.riocognized.exception.MyExceptionHandler;
 import fr.olympicinsa.riocognized.model.Image;
 import fr.olympicinsa.riocognized.repository.ImageRepository;
 import java.io.ByteArrayInputStream;

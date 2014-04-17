@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package fr.olympicinsa.riocognized;
+package fr.olympicinsa.riocognized.exception;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.xml.bind.annotation.XmlElement;
