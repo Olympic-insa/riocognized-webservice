@@ -49,6 +49,8 @@ public class Athlete implements Serializable {
     private Sport sport;
     @Temporal(TemporalType.DATE)
     private Date dOb;
+    @Column(name = "PRIVACY", nullable = false, columnDefinition = "boolean default false")
+    private Boolean privacy = false;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "athlete_timetable", joinColumns = {
@@ -71,6 +73,14 @@ public class Athlete implements Serializable {
 
     public void setDoB(Date dOb) {
         this.dOb = dOb;
+    }
+    
+    public Boolean getPrivacy() {
+        return this.privacy;
+    }
+
+    public void setPrivacy(Boolean privacy) {
+        this.privacy = privacy;
     }
 
     public void setDescription(String name, String value) {

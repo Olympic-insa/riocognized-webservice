@@ -68,6 +68,12 @@
                             </div>
                         </div>
                         <div class="control-group">
+                            <form:label cssClass="control-label" path="content">Ne pas identifier:</form:label>
+                            <div class="controls">
+                               <form:checkbox path="privacy" class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="control-group">
                             <form:label cssClass="control-label" path="content">Image :</form:label>
                             <div class="controls">
                                 <input type="file" name="file" id="file" class="form-control"></input>
@@ -93,6 +99,7 @@
                                     <th>Sport</th>
                                     <th>Palmares</th>
                                     <th>Image</th>
+                                    <th>Privé</th>
                                     <th>&nbsp;</th>
                                 </tr>
                             </thead>
@@ -108,6 +115,7 @@
                                             <c:if test="${!empty athlete.image}">
                                             <img
                                                 src="${pageContext.request.contextPath}/image/download/${athlete.image.id}" border="0" width="200px"/></c:if></td>
+                                        <td>${athlete.privacy}</td>
                                         <td>
                                             <form action="${contextPath}/delete/${athlete.id}" method="post"><input type="submit" class="btn btn-danger btn-block" value="Delete"/></form>
                                         </td>
