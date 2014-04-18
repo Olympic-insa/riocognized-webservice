@@ -96,6 +96,8 @@ public class AthleteService {
 
                    case "color" :
                    case "gender" :
+                   case "other" :
+                   case "bib" :
                    case "race_suit" :
                    case "hair" :
                    case "fit" :
