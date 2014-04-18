@@ -29,11 +29,17 @@ public class AthleteService {
     }
 
     public Athlete findOne(long id) {
-        return athleteRepository.findOne(id);
+        Athlete result = athleteRepository.findOne(id);
+        if (result == null) 
+            throw new EmptyResultDataAccessException(1) ;
+        return result;
     }
 
     public List<Athlete> findByNameStartingWith(String name) {
-        return athleteRepository.findByNameStartingWith(name);
+        List<Athlete> result = athleteRepository.findByNameStartingWith(name);
+        if (result.isEmpty()) 
+            throw new EmptyResultDataAccessException(1) ;
+        return result;
     }
 
     public List<Athlete> findBySportStartingWith(String sport) {
