@@ -122,10 +122,11 @@ public class AthleteService {
                     }
                 }
             }
+            result = result.and(athlete.privacy.eq(false));
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-      return result;
+        return result;
     }
 
     public List<String> findBySport() {
