@@ -20,74 +20,30 @@
         <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css">
         <!-- Latest compiled and minified JavaScript -->
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css"></script>
         
     </head>
 
     <body>
-
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Rio'Cognized Application Management Tool</a>
+    </div>
+    <div>
+      <ul class="nav navbar-nav">
+         <li class="active"><a href="#">Home</a></li>
+         <li><a href="/image">Images Management</a></li>
+         <li><a href="http://lynxlabs.insa-lyon.fr">Database Management</a></li>
+         <li><a href="http://lynxlabs.insa-lyon.fr">Lynxlabs Website</a></li>
+      </ul>
+    </div>
+    </div>
+    </nav>
         <div class="container" style="text-align: center">
-            <div class="row">
+            <div class="row" style="padding-top: 50px">
                 <div class="span8 offset2">
-                    
-                    <div class="add"  style="max-width: 500px; display: inline-block; text-align: left">
-                    <h1>Athlètes</h1>
-                    <form:form method="post" action="${contextPath}/add" commandName="athlete" enctype="multipart/form-data" class="form-horizontal">
-                        <div class="control-group">
-                            <form:label cssClass="control-label" path="surname">Prénom :</form:label>
-                                <div class="controls">
-                                <form:input path="surname" class="form-control" placeholder="Prénom"/>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <form:label cssClass="control-label" path="name">Nom :</form:label>
-                                <div class="controls">
-                                <form:input path="name" class="form-control" placeholder="Nom"/>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <form:label cssClass="control-label" path="age">Age :</form:label>
-                            <div class="controls">
-                                <form:input path="age" class="form-control" placeholder="Age"/>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <form:label cssClass="control-label" path="sport">Sport :</form:label>
-                            <div class="controls">
-                                <form:input path="sport" class="form-control" placeholder="Sport"/>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <form:label cssClass="control-label" path="country">Pays :</form:label>
-                            <div class="controls">
-                                <form:input path="country" class="form-control" placeholder="Pays"/>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <form:label cssClass="control-label" path="content">Palmarès:</form:label>
-                            <div class="controls">
-                                <form:textarea path="content" class="form-control" placeholder="Palmarès de l'athlete"/>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <form:label cssClass="control-label" path="content">Ne pas identifier:</form:label>
-                            <div class="controls">
-                               <form:checkbox path="privacy" placeholder="Pays" class="form-control"/>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <form:label cssClass="control-label" path="content">Image :</form:label>
-                            <div class="controls">
-                                <input type="file" name="file" id="file" class="form-control"></input>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <div class="controls">
-                                <br>
-                                <input type="submit" value="Add Athlete" class="btn-primary btn btn-block"/>
-                            </form:form>
-                            </div>
-                        </div>
-                    </div>
                      <div class="show">
                         <c:if test="${!empty athletes}">
                         <h3>Athletes</h3>
@@ -132,3 +88,6 @@
 
     </body>
 </html>
+<script>
+    $('.datepicker').datepicker()
+</script>

@@ -28,9 +28,23 @@
     </head>
 
     <body>
-
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Rio'Cognized Application Management Tool</a>
+    </div>
+    <div>
+      <ul class="nav navbar-nav">
+         <li><a href="/">Home</a></li>
+         <li class="active"><a href="/image">Images Management</a></li>
+         <li><a href="http://lynxlabs.insa-lyon.fr">Database Management</a></li>
+         <li><a href="http://lynxlabs.insa-lyon.fr">Lynxlabs Website</a></li>
+      </ul>
+    </div>
+    </div>
+    </nav>
         <div class="container" style="text-align: center">
-            <div class="row">
+            <div class="row" style="padding-top: 50px">
                 <div class="span8 offset2">
                     <div class="add"  style="max-width: 500px; display: inline-block; text-align: left">
                     <h1>Images Manager</h1>
