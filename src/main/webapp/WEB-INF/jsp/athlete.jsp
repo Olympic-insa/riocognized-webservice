@@ -41,7 +41,14 @@
     <div>
       <ul class="nav navbar-nav">
          <li class="active"><a href="#">Home</a></li>
-         <li><a href="/image">Images Management</a></li>
+         <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Images Management <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li><a href="/image">Athletes</a></li>
+            <li class="divider"></li>
+            <li><a href="/ad/manage">Adverts</a></li>
+          </ul>
+         </li>
          <li><a href="#" class="btn" id="openBtn">Database Management</a></li>
          <li><a href="http://lynxlabs.insa-lyon.fr">Lynxlabs Website</a></li>
       </ul>
