@@ -71,6 +71,14 @@ public class MyExceptionHandler {
     public ErrorMessage handleTooManyResultException(TooManyResultException e, HttpServletRequest req) {
         return new ErrorMessage("TOO_MANY_RESULTS");
     }
+    
+    @ExceptionHandler(NullPointerException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
+    public ErrorMessage handleNullPointerException(NullPointerException e, HttpServletRequest req) {
+        return new ErrorMessage("ENTITY_HAS_UNALLOWED_NULL_VALUE");
+    }
+    
   
     public static class InvalidContent extends RuntimeException {
     }
