@@ -1,34 +1,21 @@
 package fr.olympicinsa.riocognized.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import org.springframework.util.Assert;
 
 @Entity
 @Table(name = "CLIENT")
@@ -46,9 +33,8 @@ public class Client implements Serializable {
     @ManyToOne
     private Country country;
     @JsonIgnore
-    @OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "image_id")
-    private Image image;
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true, mappedBy = "client")
+    private Set<ImagePub> images = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -74,12 +60,12 @@ public class Client implements Serializable {
         this.country = country;
     }
 
-    public Image getImage() {
-        return image;
+    public Set getImages() {
+        return images;
     }
 
-    public void setImage(Image image) {
-        this.image = image;
+    public void setImages(Set images) {
+        this.images = images;
     }
 
     public void setSurname(String surname) {
@@ -99,9 +85,27 @@ public class Client implements Serializable {
     }
 
     @JsonProperty("image_url")
-    public String getURL() {
-        return "http://olympic-insa.fr.nf:8083/image/download/" + image.getId();
+    public List<String> getURL() {
+        Iterator list = this.images.iterator();
+        List<String> urlList = new ArrayList<>();
+        while (list.hasNext()) {
+            ImagePub image = (ImagePub) list.next();
+            urlList.add("http://olympic-insa.fr.nf:8083/image/download/" + image.getId());
+        }
+        return urlList;
+    }
 
+    public void addImage(ImagePub image) {
+        images.add(image);
+        if (image.getClient() != this) {
+            image.setClient(this);
+        }
+    }
+
+    public void deleteImage(ImagePub image) {
+        if (image != null) {
+            images.remove(image);
+        }
     }
 
 }
