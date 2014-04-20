@@ -7,7 +7,10 @@ package fr.olympicinsa.riocognized;
 
 import fr.olympicinsa.riocognized.exception.MyExceptionHandler;
 import fr.olympicinsa.riocognized.model.Image;
+import fr.olympicinsa.riocognized.model.ImagePub;
+import fr.olympicinsa.riocognized.repository.ImagePubRepository;
 import fr.olympicinsa.riocognized.repository.ImageRepository;
+import fr.olympicinsa.riocognized.service.ImageService;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -34,28 +37,51 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 
 @Controller
-@RequestMapping("/image")
+@RequestMapping("/ad")
 @ComponentScan("fr.olympicinsa.riocognized.repository")
-public class ImageController extends MyExceptionHandler{
+public class AdvertController extends MyExceptionHandler{
 
     @Autowired
     private ImageRepository imageRepository;
-
+    @Autowired
+    private ImagePubRepository imagePubRepository;
+    @Autowired
+    private ImageService imageService;
+    
     @RequestMapping("")
+    public String getAdvert(HttpServletResponse response) {
+        
+        ImagePub ad = imageService.findOneRandom();
+        try {
+            ByteArrayInputStream bis = new ByteArrayInputStream(ad.getContent());
+            response.setHeader("Content-Disposition", "inline;filename=\"" + ad.getFilename() + "\"");
+            OutputStream out = response.getOutputStream();
+            response.setContentType(ad.getContentType());
+            IOUtils.copy(bis, out);
+            out.flush();
+            out.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+    @RequestMapping("/manage")
     public String index(Map<String, Object> map) {
         try {
-            map.put("image", new Image());
-            map.put("imageList", imageRepository.findAll());
+            map.put("image", new ImagePub());
+            map.put("imageList", imagePubRepository.findAll());
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return "image";
+        return "advert";
     }
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public String save(
-            @ModelAttribute("image") Image image,
+            @ModelAttribute("image") ImagePub image,
             @RequestParam("file") MultipartFile file) {
 
         System.out.println("Name:" + image.getName());
@@ -74,18 +100,18 @@ public class ImageController extends MyExceptionHandler{
         }
 
         try {
-            imageRepository.save(image);
+            imagePubRepository.save(image);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return "redirect:/image";
+        return "redirect:/ad/manage";
     }
 
     @RequestMapping("/download/{imageId}")
     public String download(@PathVariable("imageId") Long imageId, HttpServletResponse response) {
 
-        Image doc = imageRepository.findOne(imageId);
+        ImagePub doc = imagePubRepository.findOne(imageId);
         try {
             ByteArrayInputStream bis = new ByteArrayInputStream(doc.getContent());
             response.setHeader("Content-Disposition", "inline;filename=\"" + doc.getFilename() + "\"");
@@ -104,19 +130,9 @@ public class ImageController extends MyExceptionHandler{
     @RequestMapping("/remove/{imageId}")
     public String remove(@PathVariable("imageId") Long imageId) {
 
-        imageRepository.delete(imageId);
+        imagePubRepository.delete(imageId);
 
-        return "redirect:/image";
-    }
-        
-    /* API POST Method*/
-    
-    @RequestMapping(value="/api/upload", method=RequestMethod.POST)
-    @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody public Image handleFileUpload(@RequestBody final Image image){
-        if (image.getContent().length < 1 || !image.getContentType().startsWith("image")) throw new InvalidContent();
-        Image created = imageRepository.save(image);
-        return created;
+        return "redirect:/ad/manage";
     }
     
 }

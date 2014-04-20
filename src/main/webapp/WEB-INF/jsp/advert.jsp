@@ -50,7 +50,7 @@
           <ul class="dropdown-menu">
             <li><a href="/image">Athletes</a></li>
             <li class="divider"></li>
-            <li><a href="/ad/manage">Adverts</a></li>
+            <li><a href="#">Adverts</a></li>
           </ul>
          </li>
          <li><a href="#" class="btn" id="openBtn">Database Management</a></li>
@@ -63,8 +63,8 @@
             <div class="row" style="padding-top: 50px">
                 <div class="span8 offset2">
                     <div class="add"  style="max-width: 500px; display: inline-block; text-align: left">
-                    <h1>Images Manager</h1>
-                        <form:form method="post" action="image/save.html" commandName="image" enctype="multipart/form-data" class="form-horizontal">
+                    <h1>Advert Manager</h1>
+                        <form:form method="post" action="save.html" commandName="image" enctype="multipart/form-data" class="form-horizontal">
                             <form:errors path="*" cssClass="error"/>
                         <div class="control-group">
                             <form:label cssClass="control-label" path="name">Name :</form:label>
@@ -111,13 +111,13 @@
                                         <td>${image.name}</td>
                                         <td>${image.description}</td>
                                         <td><img
-                                                src="${pageContext.request.contextPath}/image/download/${image.id}" border="0" width="200px"/></td>
+                                                src="${pageContext.request.contextPath}/ad/download/${image.id}" border="0" width="200px"/></td>
                                         <td width="20px">
-                                            <a href="${pageContext.request.contextPath}/image/download/${image.id}"><img
+                                            <a href="${pageContext.request.contextPath}/ad/download/${image.id}"><img
                                                 src="${pageContext.request.contextPath}/img/save_icon.gif" border="0"
                                                 title="Download this image"/></a> 
                                          
-                                            <a href="${pageContext.request.contextPath}/image/remove/${image.id}"
+                                            <a href="${pageContext.request.contextPath}/remove/${image.id}"
                                                 onclick="return confirm('Are you sure you want to delete this image?')"><img
                                                 src="${pageContext.request.contextPath}/img/delete_icon.gif" border="0"
                                                 title="Delete this image"/></a> 

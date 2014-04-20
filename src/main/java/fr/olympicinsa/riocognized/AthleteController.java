@@ -1,5 +1,6 @@
 package fr.olympicinsa.riocognized;
 
+import fr.olympicinsa.riocognized.exception.MyExceptionHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
@@ -57,7 +58,8 @@ public class AthleteController extends MyExceptionHandler {
     public @ResponseBody
     String listDetailAthleteJson(ModelMap model, @RequestParam Map<String,String> param) throws JSONException {
         JSONArray athleteArray = new JSONArray();
-        for (Athlete athlete : athleteService.findByDescription(param)) {
+        List<Athlete> athleteList = param.isEmpty() ? athleteService.findAllOrderByName() : athleteService.findByDescription(param);
+        for (Athlete athlete : athleteList) {
             JSONObject countryJSON = new JSONObject();
             countryJSON.put("id",athlete.getCountry().getId());
             countryJSON.put("name",athlete.getCountry().getName());

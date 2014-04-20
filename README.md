@@ -24,8 +24,16 @@ http://lynxlabs.fr.nf:8083/recognition/api/detect?url=http://www.ouest-france.fr
 
 }
 ```
+#### Ads API
+
+###### Get a random ad.
+
+` GET /ad `
+###### [Try it -  :coffee:][2]
 
 ## Web GUI
+###### New web GUI Available !
+
 `GET /`
 => Main Page - Add & Delete Athlete
 
@@ -101,10 +109,10 @@ GET /api/athletes?{criteria}={name}
 country, char(2) : do you know his sport ?
 sport, varchar(50) : do you know his nationality ?
 gender, (M/F) : male or female.
-color, varchar(50)
+skin_color, varchar(50)
 fit, varchar(50) : athlete's fit (small, tall, skinny, strong).
 race_suit, varchar(50) : athlete's race suit dominant color.
-hair, varchar(50) : athlete's hair color.
+hair_color/hair_length, varchar(50) : athlete's hair color/length.
 racing, true/false : is athlete currently racing.
 
 ```
@@ -203,3 +211,4 @@ Olympic-INSA Team
 
 
   [1]: http://lynxlabs.fr.nf:8083
+  [2]: http://lynxlabs.fr.nf:8083/ad

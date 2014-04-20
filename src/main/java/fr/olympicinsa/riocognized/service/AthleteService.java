@@ -3,6 +3,7 @@ package fr.olympicinsa.riocognized.service;
 import com.mysema.query.types.OrderSpecifier;
 import com.mysema.query.types.Predicate;
 import com.mysema.query.types.expr.BooleanExpression;
+import fr.olympicinsa.riocognized.exception.MyExceptionHandler.TooManyResultException;
 import fr.olympicinsa.riocognized.model.Athlete;
 import fr.olympicinsa.riocognized.model.Country;
 import fr.olympicinsa.riocognized.model.QAthlete;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,11 +29,17 @@ public class AthleteService {
     }
 
     public Athlete findOne(long id) {
-        return athleteRepository.findOne(id);
+        Athlete result = athleteRepository.findOne(id);
+        if (result == null) 
+            throw new EmptyResultDataAccessException(1) ;
+        return result;
     }
 
     public List<Athlete> findByNameStartingWith(String name) {
-        return athleteRepository.findByNameStartingWith(name);
+        List<Athlete> result = athleteRepository.findByNameStartingWith(name);
+        if (result.isEmpty()) 
+            throw new EmptyResultDataAccessException(1) ;
+        return result;
     }
 
     public List<Athlete> findBySportStartingWith(String sport) {
@@ -59,6 +67,10 @@ public class AthleteService {
                             newResult.remove();
                     }
                 }
+                if (result.isEmpty()) 
+                    throw new EmptyResultDataAccessException(5) ;
+                if (result.size() > 5) 
+                    throw new TooManyResultException() ;
 		return result;
 	}
     
@@ -88,10 +100,13 @@ public class AthleteService {
                          }
                          break;
 
-                   case "color" :
+                   case "skin_color" :
+                   case "hair_color" :
                    case "gender" :
+                   case "other" :
+                   case "bib" :
                    case "race_suit" :
-                   case "hair" :
+                   case "hair_length" :
                    case "fit" :
                          if (value != null && !"".equals(value)) {
                              expression = athlete.description.get(key).like("%"
@@ -108,10 +123,11 @@ public class AthleteService {
                     }
                 }
             }
+            result = result.and(athlete.privacy.eq(false));
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-      return result;
+        return result;
     }
 
     public List<String> findBySport() {

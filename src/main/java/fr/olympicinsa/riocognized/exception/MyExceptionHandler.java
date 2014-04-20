@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package fr.olympicinsa.riocognized;
+package fr.olympicinsa.riocognized.exception;
 
+import fr.olympicinsa.riocognized.exception.ErrorMessage;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,7 @@ public class MyExceptionHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorMessage handleResourceNotFoundException(EmptyResultDataAccessException e, HttpServletRequest req) {
-        return new ErrorMessage(e);
+        return new ErrorMessage("ATHLETE_NOT_FOUND");
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -63,7 +64,25 @@ public class MyExceptionHandler {
     public ErrorMessage handleInvalidContent(InvalidContent e, HttpServletRequest req) {
         return new ErrorMessage("INVALID_OR_EMPTY_CONTENT");
     }
+    
+    @ExceptionHandler(TooManyResultException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.REQUEST_ENTITY_TOO_LARGE)
+    public ErrorMessage handleTooManyResultException(TooManyResultException e, HttpServletRequest req) {
+        return new ErrorMessage("TOO_MANY_RESULTS");
+    }
+    
+    @ExceptionHandler(NullPointerException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
+    public ErrorMessage handleNullPointerException(NullPointerException e, HttpServletRequest req) {
+        return new ErrorMessage("ENTITY_HAS_UNALLOWED_NULL_VALUE");
+    }
+    
   
-    public class InvalidContent extends RuntimeException {
+    public static class InvalidContent extends RuntimeException {
+    }
+    
+    public static class TooManyResultException extends RuntimeException {
     }
 }
