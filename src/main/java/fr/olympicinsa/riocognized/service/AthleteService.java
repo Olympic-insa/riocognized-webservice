@@ -100,12 +100,13 @@ public class AthleteService {
                          }
                          break;
 
-                   case "color" :
+                   case "skin_color" :
+                   case "hair_color" :
                    case "gender" :
                    case "other" :
                    case "bib" :
                    case "race_suit" :
-                   case "hair" :
+                   case "hair_length" :
                    case "fit" :
                          if (value != null && !"".equals(value)) {
                              expression = athlete.description.get(key).like("%"
