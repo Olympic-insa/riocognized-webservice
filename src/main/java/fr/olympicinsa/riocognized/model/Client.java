@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "CLIENT")
@@ -24,12 +25,16 @@ public class Client implements Serializable {
     @Id
     @GeneratedValue
     private Long id;
+    @NotNull
     @Column(name = "LAST_NAME")
     private String name;
+    @NotNull
     @Column(name = "FIRST_NAME")
     private String surname;
+    @NotNull
     @Column(name = "CONTENT")
     private String content;
+    @NotNull
     @ManyToOne
     private Country country;
     @JsonIgnore

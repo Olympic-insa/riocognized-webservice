@@ -28,6 +28,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 import org.springframework.util.Assert;
 
 @Entity
@@ -37,18 +38,24 @@ public class Athlete implements Serializable {
     @Id
     @GeneratedValue
     private Long id;
+    @NotNull
     @Column(name = "LAST_NAME")
     private String name;
+    @NotNull
     @Column(name = "FIRST_NAME")
     private String surname;
+    @NotNull
     @Column(name = "CONTENT")
     private String content;
+    @NotNull
     @ManyToOne
     private Country country;
+    @NotNull
     @ManyToOne
     private Sport sport;
     @Temporal(TemporalType.DATE)
     private Date dOb;
+    @NotNull
     @Column(name = "PRIVACY", nullable = false, columnDefinition = "boolean default false")
     private Boolean privacy = false;
 
