@@ -60,9 +60,9 @@
                         <form:form method="post" action="image/save.html" commandName="image" enctype="multipart/form-data" class="form-horizontal">
                             <form:errors path="*" cssClass="error"/>
                         <div class="control-group">
-                            <form:label cssClass="control-label" path="name">Nom :</form:label>
+                            <form:label cssClass="control-label" path="name">Name :</form:label>
                             <div class="controls">
-                                <form:input path="name" class="form-control" placeholder="Nom"/>
+                                <form:input path="name" required="true" class="form-control" placeholder="Nom"/>
                             </div>
                         </div>
                         <div class="control-group">
@@ -74,7 +74,7 @@
                         <div class="control-group">
                             <form:label cssClass="control-label" path="content">Image :</form:label>
                             <div class="controls">
-                                <input type="file" name="file" id="file" class="form-control"></input>
+                                <input type="file" accept="image/*" required="true" name="file" id="file" class="form-control"></input>
                             </div>
                         </div>
                         <div class="control-group">

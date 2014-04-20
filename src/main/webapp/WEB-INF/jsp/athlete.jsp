@@ -57,13 +57,13 @@
                         <table class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th>Nom</th>
-                                    <th>Pays</th>
+                                    <th>Name</th>
+                                    <th>Country</th>
                                     <th>Age</th>
                                     <th>Sport</th>
                                     <th>Palmares</th>
                                     <th>Image</th>
-                                    <th>Privé</th>
+                                    <th>Privacy</th>
                                     <th>&nbsp;</th>
                                 </tr>
                             </thead>
