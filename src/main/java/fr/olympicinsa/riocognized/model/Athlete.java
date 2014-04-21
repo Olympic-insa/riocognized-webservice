@@ -24,6 +24,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -64,7 +65,11 @@ public class Athlete implements Serializable {
         @JoinColumn(name = "athlete_id")}, inverseJoinColumns = {
         @JoinColumn(name = "timetable_id")})
     private Set<Timetable> timetables = new HashSet<Timetable>();
-
+    
+    @JsonIgnore
+    @OneToMany(cascade=CascadeType.ALL, orphanRemoval = true)
+    private Set<ImageFace> faces = new HashSet<>();
+        
     @JsonIgnore
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "image_id")
@@ -203,5 +208,18 @@ public class Athlete implements Serializable {
 
     public void setTimetable(Set<Timetable> timetables) {
         this.timetables = timetables;
+    }
+    
+    public Set<ImageFace> getFaces() {
+        return faces;
+    }
+    
+    public void setFaces(Set<ImageFace> faces) {
+        this.faces = faces;
+    }
+    
+    @JsonIgnore
+    public String getFullName() {
+        return name + ", " + surname;
     }
 }

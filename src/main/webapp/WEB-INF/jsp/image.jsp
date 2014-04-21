@@ -50,6 +50,8 @@
           <ul class="dropdown-menu">
             <li><a href="/image">Athletes</a></li>
             <li class="divider"></li>
+            <li><a href="/recognition">Face Recognition</a></li>
+            <li class="divider"></li>
             <li><a href="/ad/manage">Adverts</a></li>
           </ul>
          </li>

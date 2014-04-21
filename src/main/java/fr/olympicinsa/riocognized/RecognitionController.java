@@ -1,40 +1,43 @@
 package fr.olympicinsa.riocognized;
 
 import fr.olympicinsa.riocognized.exception.MyExceptionHandler;
-import org.springframework.stereotype.Controller;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.json.JSONException;
-
-import java.io.IOException;
+import fr.olympicinsa.riocognized.facedetector.FaceDetector;
 
 import fr.olympicinsa.riocognized.model.*;
-import fr.olympicinsa.riocognized.facedetector.FaceDetector;
 import fr.olympicinsa.riocognized.repository.*;
+import fr.olympicinsa.riocognized.service.AthleteService;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.beans.PropertyEditorSupport;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.Map;
 import javax.imageio.ImageIO;
-
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Handles requests for the application home page.
@@ -45,21 +48,69 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class RecognitionController extends MyExceptionHandler {
 
     @Autowired
-    private AthleteRepository athleteRepository;
+    private AthleteService athleteService;
     @Autowired
     private ImageRepository imageRepository;
+    @Autowired
+    private ImageFaceRepository imageFaceRepository;
+    
+        @RequestMapping("")
+    public String index(Map<String, Object> map) {
+        try {
+            map.put("image", new ImageFace());
+            map.put("imageList", imageFaceRepository.findAll());
+            map.put("athleteList", athleteService.findAllOrderByName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-    @RequestMapping(value = "/api/athletes/{id}", method = RequestMethod.GET)
-    @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody
-    Athlete athleteByIdJson(ModelMap model, @PathVariable("id") long id) throws JSONException {
-        return athleteRepository.findOne(id);
+        return "imagedb";
     }
 
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    public String save(@Validated
+            @ModelAttribute("image") ImageFace image,
+            @RequestParam("file") MultipartFile file) {
+
+        System.out.println("Name:" + image.getName());
+        System.out.println("Desc:" + image.getDescription());
+        System.out.println("File:" + file.getName());
+        System.out.println("ContentType:" + file.getContentType());
+
+        try {
+            byte[] blob = IOUtils.toByteArray(file.getInputStream());
+
+            image.setFilename(file.getOriginalFilename());
+            image.setContent(blob);
+            image.setContentType(file.getContentType());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            imageFaceRepository.save(image);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "redirect:/recognition";
+    }
+    
+    @InitBinder
+    protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
+        binder.registerCustomEditor(Athlete.class, "athlete", new PropertyEditorSupport() {
+        @Override
+        public void setAsText(String text) {
+            Athlete ath = athleteService.findOne(Long.parseLong(text));
+            setValue(ath);
+        }
+        });
+    }
+    
     @RequestMapping("/download/{imageId}")
     public String download(@PathVariable("imageId") Long imageId, HttpServletResponse response) {
 
-        Image doc = imageRepository.findOne(imageId);
+        ImageFace doc = imageFaceRepository.findOne(imageId);
         try {
             ByteArrayInputStream bis = new ByteArrayInputStream(doc.getContent());
             response.setHeader("Content-Disposition", "inline;filename=\"" + doc.getFilename() + "\"");
@@ -73,6 +124,14 @@ public class RecognitionController extends MyExceptionHandler {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @RequestMapping("/remove/{imageId}")
+    public String remove(@PathVariable("imageId") Long imageId) {
+
+        imageFaceRepository.delete(imageId);
+
+        return "redirect:/recognition";
     }
 
     /* API POST Method*/
