@@ -11,6 +11,7 @@ import java.awt.image.DataBufferByte;
 import java.beans.PropertyEditorSupport;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
@@ -54,6 +55,7 @@ public class RecognitionController extends MyExceptionHandler {
     private ImageRepository imageRepository;
     @Autowired
     private ImageFaceRepository imageFaceRepository;
+    public static String DB_PATH = "/opt/openCV/athleteDB";
 
     @RequestMapping("")
     public String index(Map<String, Object> map) {
@@ -101,7 +103,16 @@ public class RecognitionController extends MyExceptionHandler {
     public String init() {
         FaceDetector facedetector = new FaceDetector();
         List<ImageFace> imageList = imageFaceRepository.findAll();
+        int i = 0;
+        long id = 0;
         for (ImageFace image : imageList) {
+            
+            i = (id == image.getAthlete().getId()) ? i+1 : 0;
+            id = image.getAthlete().getId();
+            File dir = new File(DB_PATH + "/" + id);
+            if (!dir.exists() && !dir.isDirectory()) {
+                dir.mkdirs();
+            }
             if (image.getFaceContent() == null) {
                 try {
                     ByteArrayInputStream bis = new ByteArrayInputStream(image.getContent());
@@ -118,6 +129,13 @@ public class RecognitionController extends MyExceptionHandler {
                         image.setFaceContent(blob);
                         imageFaceRepository.save(image);
                         baos.close();
+                    }
+                    try {
+                        File outputfile = new File(dir + "/face" + i + ".jpg");
+                        ImageIO.write(crop, "jpg", outputfile);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        System.err.println("Cant't write image cropped");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -137,7 +155,7 @@ public class RecognitionController extends MyExceptionHandler {
                 imageFaceRepository.save(image);
             }
         }
-        
+
         return "redirect:/recognition";
     }
 
