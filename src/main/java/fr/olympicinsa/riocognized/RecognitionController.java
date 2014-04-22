@@ -2,6 +2,7 @@ package fr.olympicinsa.riocognized;
 
 import fr.olympicinsa.riocognized.exception.MyExceptionHandler;
 import fr.olympicinsa.riocognized.facedetector.FaceDetector;
+import fr.olympicinsa.riocognized.facedetector.ImageConvertor;
 
 import fr.olympicinsa.riocognized.model.*;
 import fr.olympicinsa.riocognized.repository.*;
@@ -115,11 +116,7 @@ public class RecognitionController extends MyExceptionHandler {
             }
             if (image.getFaceContent() == null) {
                 try {
-                    ByteArrayInputStream bis = new ByteArrayInputStream(image.getContent());
-                    BufferedImage imageFull = ImageIO.read(bis);
-                    byte[] data = ((DataBufferByte) imageFull.getRaster().getDataBuffer()).getData();
-                    Mat mat = new Mat(imageFull.getHeight(), imageFull.getWidth(), CvType.CV_8UC3);
-                    mat.put(0, 0, data);
+                    Mat mat = ImageConvertor.byteArrayToMat(image.getContent());
                     BufferedImage crop = facedetector.cropFaceToBufferedImage(mat);
                     if (crop != null) {
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
