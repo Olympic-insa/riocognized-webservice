@@ -115,12 +115,7 @@ public class RecognitionController extends MyExceptionHandler {
                         ImageIO.write(crop, "jpg", baos);
                         baos.flush();
                         byte[] blob = baos.toByteArray();
-                        //ImageFace face = new ImageFace();
                         image.setFaceContent(blob);
-//                    face.setAthlete(image.getAthlete());
-//                    face.setDescription(image.getDescription());
-//                    face.setName("Face");
-//                    face.setContentType("image/jpeg");
                         imageFaceRepository.save(image);
                         baos.close();
                     }
@@ -130,6 +125,19 @@ public class RecognitionController extends MyExceptionHandler {
             }
         }
 
+        return "redirect:/recognition";
+    }
+
+    @RequestMapping(value = "/clear", method = RequestMethod.GET)
+    public String clear() {
+        List<ImageFace> imageList = imageFaceRepository.findAll();
+        for (ImageFace image : imageList) {
+            if (image.getFaceContent() != null) {
+                image.setFaceContent(null);
+                imageFaceRepository.save(image);
+            }
+        }
+        
         return "redirect:/recognition";
     }
 
