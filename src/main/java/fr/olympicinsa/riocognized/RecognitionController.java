@@ -127,6 +127,7 @@ public class RecognitionController extends MyExceptionHandler {
                         baos.flush();
                         byte[] blob = baos.toByteArray();
                         image.setFaceContent(blob);
+                        image.setFaceUrl(file);
                         imageFaceRepository.save(image);
                         baos.close();
                         try {
@@ -154,6 +155,7 @@ public class RecognitionController extends MyExceptionHandler {
         for (ImageFace image : imageList) {
             if (image.getFaceContent() != null) {
                 image.setFaceContent(null);
+                image.setFaceUrl(null);
                 imageFaceRepository.save(image);
             }
         }

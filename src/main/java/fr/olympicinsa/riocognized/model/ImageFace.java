@@ -30,6 +30,9 @@ public class ImageFace extends ImageCommon implements Serializable {
     @Lob
     private byte[] faceContent;
     
+    @Column(name = "face_url")
+    private String faceUrl;
+    
     public ImageFace() {
         super();
     }
@@ -49,4 +52,12 @@ public class ImageFace extends ImageCommon implements Serializable {
     public void setFaceContent(byte[] content) {
         this.faceContent = content;
     }
+    
+    public String getFaceUrl() {
+        return faceUrl;
+    }
+
+    public void setFaceUrl(String faceUrl) {
+        this.faceUrl = faceUrl;
+   }
 }
