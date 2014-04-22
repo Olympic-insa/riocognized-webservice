@@ -3,6 +3,7 @@ package fr.olympicinsa.riocognized;
 import fr.olympicinsa.riocognized.exception.MyExceptionHandler;
 import fr.olympicinsa.riocognized.facedetector.FaceDetector;
 import fr.olympicinsa.riocognized.facedetector.ImageConvertor;
+import fr.olympicinsa.riocognized.facedetector.csv.FaceDBReader;
 
 import fr.olympicinsa.riocognized.model.*;
 import fr.olympicinsa.riocognized.repository.*;
@@ -102,13 +103,14 @@ public class RecognitionController extends MyExceptionHandler {
 
     @RequestMapping(value = "/init", method = RequestMethod.GET)
     public String init() {
+        FaceDBReader faces = new FaceDBReader(DB_PATH + "/faces.csv");
         FaceDetector facedetector = new FaceDetector();
         List<ImageFace> imageList = imageFaceRepository.findAll();
         int i = 0;
         long id = 0;
         for (ImageFace image : imageList) {
-            
-            i = (id == image.getAthlete().getId()) ? i+1 : 0;
+
+            i = (id == image.getAthlete().getId()) ? i + 1 : 0;
             id = image.getAthlete().getId();
             File dir = new File(DB_PATH + "/" + id);
             if (!dir.exists() && !dir.isDirectory()) {
@@ -119,6 +121,7 @@ public class RecognitionController extends MyExceptionHandler {
                     Mat mat = ImageConvertor.byteArrayToMat(image.getContent());
                     BufferedImage crop = facedetector.cropFaceToBufferedImage(mat);
                     if (crop != null) {
+                        String file = dir + "/face" + i + ".jpg";
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         ImageIO.write(crop, "jpg", baos);
                         baos.flush();
@@ -126,20 +129,22 @@ public class RecognitionController extends MyExceptionHandler {
                         image.setFaceContent(blob);
                         imageFaceRepository.save(image);
                         baos.close();
-                    }
-                    try {
-                        File outputfile = new File(dir + "/face" + i + ".jpg");
-                        ImageIO.write(crop, "jpg", outputfile);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        System.err.println("Cant't write image cropped");
+                        try {
+                            File outputfile = new File(file);
+                            ImageIO.write(crop, "jpg", outputfile);
+                        } catch (IOException e) {                                                             
+                            e.printStackTrace();
+                            System.err.println("Cant't write image cropped");
+                        }
+                                                                                                                                                                                                                                                                                        
+                        faces.addFace(new String[]{file,String.valueOf(id)});                                                                                                                                                                              
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
-
+        faces.writeFile();
         return "redirect:/recognition";
     }
 
