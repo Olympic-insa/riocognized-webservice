@@ -14,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -53,8 +54,8 @@ public class RecognitionController extends MyExceptionHandler {
     private ImageRepository imageRepository;
     @Autowired
     private ImageFaceRepository imageFaceRepository;
-    
-        @RequestMapping("")
+
+    @RequestMapping("")
     public String index(Map<String, Object> map) {
         try {
             map.put("image", new ImageFace());
@@ -69,8 +70,8 @@ public class RecognitionController extends MyExceptionHandler {
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public String save(@Validated
-            @ModelAttribute("image") ImageFace image,
-            @RequestParam("file") MultipartFile file) {
+        @ModelAttribute("image") ImageFace image,
+        @RequestParam("file") MultipartFile file) {
 
         System.out.println("Name:" + image.getName());
         System.out.println("Desc:" + image.getDescription());
@@ -95,24 +96,79 @@ public class RecognitionController extends MyExceptionHandler {
 
         return "redirect:/recognition";
     }
-    
+
+    @RequestMapping(value = "/init", method = RequestMethod.GET)
+    public String init() {
+        FaceDetector facedetector = new FaceDetector();
+        List<ImageFace> imageList = imageFaceRepository.findAll();
+        for (ImageFace image : imageList) {
+            if (image.getFaceContent() == null) {
+                try {
+                    ByteArrayInputStream bis = new ByteArrayInputStream(image.getContent());
+                    BufferedImage imageFull = ImageIO.read(bis);
+                    byte[] data = ((DataBufferByte) imageFull.getRaster().getDataBuffer()).getData();
+                    Mat mat = new Mat(imageFull.getHeight(), imageFull.getWidth(), CvType.CV_8UC3);
+                    mat.put(0, 0, data);
+                    BufferedImage crop = facedetector.cropFaceToBufferedImage(mat);
+                    if (crop != null) {
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        ImageIO.write(crop, "jpg", baos);
+                        baos.flush();
+                        byte[] blob = baos.toByteArray();
+                        //ImageFace face = new ImageFace();
+                        image.setFaceContent(blob);
+//                    face.setAthlete(image.getAthlete());
+//                    face.setDescription(image.getDescription());
+//                    face.setName("Face");
+//                    face.setContentType("image/jpeg");
+                        imageFaceRepository.save(image);
+                        baos.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return "redirect:/recognition";
+    }
+
     @InitBinder
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
         binder.registerCustomEditor(Athlete.class, "athlete", new PropertyEditorSupport() {
-        @Override
-        public void setAsText(String text) {
-            Athlete ath = athleteService.findOne(Long.parseLong(text));
-            setValue(ath);
-        }
+            @Override
+            public void setAsText(String text) {
+                Athlete ath = athleteService.findOne(Long.parseLong(text));
+                setValue(ath);
+            }
         });
     }
-    
+
     @RequestMapping("/download/{imageId}")
     public String download(@PathVariable("imageId") Long imageId, HttpServletResponse response) {
 
         ImageFace doc = imageFaceRepository.findOne(imageId);
         try {
             ByteArrayInputStream bis = new ByteArrayInputStream(doc.getContent());
+            response.setHeader("Content-Disposition", "inline;filename=\"" + doc.getFilename() + "\"");
+            OutputStream out = response.getOutputStream();
+            response.setContentType(doc.getContentType());
+            IOUtils.copy(bis, out);
+            out.flush();
+            out.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @RequestMapping("/downloadFace/{imageId}")
+    public String downloadFace(@PathVariable("imageId") Long imageId, HttpServletResponse response) {
+
+        ImageFace doc = imageFaceRepository.findOne(imageId);
+        try {
+            ByteArrayInputStream bis = new ByteArrayInputStream(doc.getFaceContent());
             response.setHeader("Content-Disposition", "inline;filename=\"" + doc.getFilename() + "\"");
             OutputStream out = response.getOutputStream();
             response.setContentType(doc.getContentType());
@@ -204,7 +260,7 @@ public class RecognitionController extends MyExceptionHandler {
             throw new InvalidContent();
         }
     }
-    
+
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/api", method = RequestMethod.GET)
     public @ResponseBody

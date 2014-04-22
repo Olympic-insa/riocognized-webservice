@@ -113,6 +113,7 @@
                                     <th>Name</th>
                                     <th>Ahlete</th>
                                     <th>Display</th>
+                                    <th>Face</th>
                                     <th>&nbsp;</th>
                                 </tr>
                             </thead>
@@ -123,6 +124,8 @@
                                         <td><b>${image.athlete.fullName}</b><br>${image.athlete.doB}<p>${image.athlete.content}</p></td>
                                         <td><img
                                                 src="${pageContext.request.contextPath}/recognition/download/${image.id}" border="0" width="200px"/></td>
+                                        <td><img
+                                                src="${pageContext.request.contextPath}/recognition/downloadFace/${image.id}" border="0" width="200px"/></td>
                                         <td width="20px">
                                             <a href="${pageContext.request.contextPath}/recognition/download/${image.id}"><img
                                                 src="${pageContext.request.contextPath}/img/save_icon.gif" border="0"
