@@ -6,6 +6,7 @@
 
 <!doctype html>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
@@ -57,6 +58,7 @@
          </li>
          <li><a href="#" class="btn" id="openBtn">Database Management</a></li>
          <li><a href="http://lynxlabs.insa-lyon.fr">Lynxlabs Website</a></li>
+         <li><sec:authorize access="isAuthenticated()"><a href="/j_spring_security_logout">Sign Out</a></p></sec:authorize></li>
       </ul>
     </div>
     </div>
