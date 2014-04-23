@@ -154,4 +154,14 @@ public class AthleteController extends MyExceptionHandler {
         athleteService.delete(athleteService.findOne(athleteId));
         return "redirect:/";
     }
+    
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+	public String logoutPage() {
+		return "logout";
+	}
+
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
+	public String loginPage() {
+		return "login";
+	}
 }

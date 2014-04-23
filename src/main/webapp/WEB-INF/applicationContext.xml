@@ -49,21 +49,27 @@
         <security:intercept-url pattern="/" access="hasRole('user')" />
         <security:intercept-url pattern="/image" access="hasRole('user')" />
         <security:intercept-url pattern="/image/" access="hasRole('user')" />
+        <security:intercept-url pattern="/image/delete/**" access="hasRole('user')" />
         <security:intercept-url pattern="/recognition" access="hasRole('user')" />
         <security:intercept-url pattern="/recognition/*" access="hasRole('user')" />
-        <security:form-login />
-        <security:logout logout-success-url="/" delete-cookies="JSESSIONID"/>
+        <security:intercept-url pattern="/login**" access="permitAll" />
+        <security:intercept-url pattern="/logout**" access="permitAll" />
+        <security:form-login login-page="/login"
+			username-parameter="username" password-parameter="password"
+			default-target-url="/" authentication-failure-url="/login" />
+        <security:logout logout-success-url="/logout" delete-cookies="JSESSIONID"/>
         <security:remember-me />
         <security:session-management invalid-session-url="/">
-            <security:concurrency-control max-sessions="1" error-if-maximum-exceeded="true" />
+            <security:concurrency-control max-sessions="5" error-if-maximum-exceeded="false" />
         </security:session-management>
     </security:http>
     
     <security:authentication-manager>
         <security:authentication-provider>
+            <security:password-encoder hash="sha"/>
             <security:user-service>
                 <security:user name="lynxlabs"
-                      password="riocognized"
+                      password="dee382bc0053792d6fff5352c2a5c1d337bab013"
                       authorities="user"/>
             </security:user-service>
         </security:authentication-provider>
