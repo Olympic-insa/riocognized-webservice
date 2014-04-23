@@ -99,7 +99,8 @@ public class AthleteService {
                                  + value + "%");
                          }
                          break;
-
+                   
+                   case "height" :
                    case "skin_color" :
                    case "hair_color" :
                    case "gender" :

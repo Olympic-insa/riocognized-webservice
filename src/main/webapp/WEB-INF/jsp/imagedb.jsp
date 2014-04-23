@@ -66,20 +66,26 @@
         <div class="container" style="text-align: center">
             <div class="row" style="padding-top: 50px">
                 <div class="span8 offset2">
-                    <div class="add"  style="max-width: 500px; display: inline-block; text-align: left">
-                    <h1>Images Manager</h1>
-                        <form:form method="post" action="image/save.html" commandName="image" enctype="multipart/form-data" class="form-horizontal">
+                    <div class="add"  style="max-width: 500px; display: inline-block; text-align: left;">
+                    <h1>Faces Manager</h1>
+                        <form:form method="post" action="/recognition/save.html" commandName="image" enctype="multipart/form-data" class="form-horizontal">
                             <form:errors path="*" cssClass="error"/>
                         <div class="control-group">
                             <form:label cssClass="control-label" path="name">Name :</form:label>
                             <div class="controls">
-                                <form:input path="name" required="true" class="form-control" placeholder="Name"/>
+                                <form:input path="name" class="form-control" placeholder="Name - Not Required"/>
                             </div>
                         </div>
                         <div class="control-group">
-                            <form:label cssClass="control-label" path="description">Description :</form:label>
+                            <form:label cssClass="control-label" path="description">Comments :</form:label>
                             <div class="controls">
-                                <form:textarea path="description" class="form-control" placeholder="Description"/>
+                                <form:textarea path="description" class="form-control" placeholder="Description - If necessary"/>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <form:label cssClass="control-label" path="athlete">Athlete :</form:label>
+                            <div class="controls">
+                                <form:select path="athlete" required="true" id="athlete" items="${athleteList}" itemValue="id" itemLabel="fullName"/>
                             </div>
                         </div>
                         <div class="control-group">
@@ -91,8 +97,11 @@
                         <div class="control-group">
                             <div class="controls">
                                 <br>
-                                <input type="submit" value="Add Image" class="btn-primary btn btn-block"/>
+                                <input type="submit" value="Add Image" class="btn-primary btn btn-block"/><br>
                             </form:form>
+                                <form:form method="post" action="/recognition" class="form-horizontal">
+                                <input value="Init PCA Database" readonly class="btn-success btn btn-block"/>
+                                </form:form>
                             </div>
                         </div>
                     </div>
@@ -104,8 +113,9 @@
                             <thead>
                                 <tr>
                                     <th>Name</th>
-                                    <th>Description</th>
+                                    <th>Ahlete</th>
                                     <th>Display</th>
+                                    <th>Face</th>
                                     <th>&nbsp;</th>
                                 </tr>
                             </thead>
@@ -113,15 +123,17 @@
                                 <c:forEach items="${imageList}" var="image">
                                 <tr>
                                         <td>${image.name}</td>
-                                        <td>${image.description}</td>
+                                        <td><b>${image.athlete.fullName}</b><br>${image.athlete.doB}<p>${image.athlete.content}</p></td>
                                         <td><img
-                                                src="${pageContext.request.contextPath}/image/download/${image.id}" border="0" width="200px"/></td>
+                                                src="${pageContext.request.contextPath}/recognition/download/${image.id}" border="0" width="200px"/></td>
+                                        <td><img
+                                                src="${pageContext.request.contextPath}/recognition/downloadFace/${image.id}" border="0" width="200px"/></td>
                                         <td width="20px">
-                                            <a href="${pageContext.request.contextPath}/image/download/${image.id}"><img
+                                            <a href="${pageContext.request.contextPath}/recognition/download/${image.id}"><img
                                                 src="${pageContext.request.contextPath}/img/save_icon.gif" border="0"
                                                 title="Download this image"/></a> 
                                          
-                                            <a href="${pageContext.request.contextPath}/image/remove/${image.id}"
+                                            <a href="${pageContext.request.contextPath}/recognition/remove/${image.id}"
                                                 onclick="return confirm('Are you sure you want to delete this image?')"><img
                                                 src="${pageContext.request.contextPath}/img/delete_icon.gif" border="0"
                                                 title="Delete this image"/></a> 
