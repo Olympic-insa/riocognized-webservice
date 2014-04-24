@@ -88,6 +88,9 @@ public class AthleteService {
  
                 switch (key) {
                     case "gps":
+                        if (value != null && !"".equals(value)) {
+                             expression = null;
+                         }
                         break;
                         
                     case "country" :
