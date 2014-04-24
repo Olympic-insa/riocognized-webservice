@@ -87,6 +87,9 @@ public class AthleteService {
                 BooleanExpression expression = null;
  
                 switch (key) {
+                    case "gps":
+                        break;
+                        
                     case "country" :
                          if (value != null && !"".equals(value)) {
                              expression = athlete.country.id.like("%"
