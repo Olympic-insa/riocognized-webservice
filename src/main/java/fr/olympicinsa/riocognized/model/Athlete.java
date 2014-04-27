@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -19,6 +21,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -37,7 +40,7 @@ import org.springframework.util.Assert;
 public class Athlete implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
     @NotNull
     @Column(name = "LAST_NAME")
@@ -56,8 +59,7 @@ public class Athlete implements Serializable {
     private Sport sport;
     @Temporal(TemporalType.DATE)
     private Date dOb;
-    @NotNull
-    @Column(name = "PRIVACY", nullable = false, columnDefinition = "boolean default false")
+    @Column(name = "PRIVACY", columnDefinition = "boolean default false")
     private Boolean privacy = false;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -65,11 +67,11 @@ public class Athlete implements Serializable {
         @JoinColumn(name = "athlete_id")}, inverseJoinColumns = {
         @JoinColumn(name = "timetable_id")})
     private Set<Timetable> timetables = new HashSet<Timetable>();
-    
+
     @JsonIgnore
-    @OneToMany(cascade=CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ImageFace> faces = new HashSet<>();
-        
+
     @JsonIgnore
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "image_id")
@@ -86,7 +88,7 @@ public class Athlete implements Serializable {
     public void setDoB(Date dOb) {
         this.dOb = dOb;
     }
-    
+
     public Boolean getPrivacy() {
         return this.privacy;
     }
@@ -95,6 +97,26 @@ public class Athlete implements Serializable {
         this.privacy = privacy;
     }
 
+    public void setStringDoB(String dOb) {
+        SimpleDateFormat formatter = new SimpleDateFormat();
+        formatter.applyPattern("dd/MM/yyyy");
+        try {
+            Date date = formatter.parse(dOb);
+            this.dOb = date;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public String getStringDoB() {
+        if (dOb != null) {
+        SimpleDateFormat formatter = new SimpleDateFormat();
+        formatter.applyPattern("dd/MM/yyyy");
+        return formatter.format(dOb);
+        } 
+        return "";
+    }
+    
     public void setDescription(String name, String value) {
 
         Assert.hasText(name);
@@ -165,7 +187,7 @@ public class Athlete implements Serializable {
     public Sport getSport() {
         return this.sport;
     }
-    
+
     @JsonProperty("racing")
     public Boolean isRacing() {
         Boolean racing = false;
@@ -173,8 +195,9 @@ public class Athlete implements Serializable {
         Date now = new Date();
         while (iter.hasNext()) {
             Timetable timetable = (Timetable) iter.next();
-            if ( (now.compareTo(timetable.getEndDate()) < 0) && (now.compareTo(timetable.getStartDate()) > 0))
+            if ((now.compareTo(timetable.getEndDate()) < 0) && (now.compareTo(timetable.getStartDate()) > 0)) {
                 racing = true;
+            }
         }
         return racing;
     }
@@ -209,15 +232,15 @@ public class Athlete implements Serializable {
     public void setTimetable(Set<Timetable> timetables) {
         this.timetables = timetables;
     }
-    
+
     public Set<ImageFace> getFaces() {
         return faces;
     }
-    
+
     public void setFaces(Set<ImageFace> faces) {
         this.faces = faces;
     }
-    
+
     @JsonIgnore
     public String getFullName() {
         return name + ", " + surname;
