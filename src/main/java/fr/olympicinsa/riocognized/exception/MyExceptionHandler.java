@@ -79,10 +79,29 @@ public class MyExceptionHandler {
         return new ErrorMessage("ENTITY_HAS_UNALLOWED_NULL_VALUE");
     }
     
-  
+    @ExceptionHandler(NoFaceDetectedException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+    public ErrorMessage handleNoFaceDetectedException(NoFaceDetectedException e, HttpServletRequest req) {
+        return new ErrorMessage("NO_FACE_DETECTED");
+    }
+    
+    @ExceptionHandler(NotRecognizedException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+    public ErrorMessage handleNotRecognizedException(NotRecognizedException e, HttpServletRequest req) {
+        return new ErrorMessage("NOT_RECOGNIZED");
+    }
+    
     public static class InvalidContent extends RuntimeException {
     }
     
     public static class TooManyResultException extends RuntimeException {
+    }
+    
+    public static class NoFaceDetectedException extends RuntimeException {
+    }
+    
+    public static class NotRecognizedException extends RuntimeException {
     }
 }
