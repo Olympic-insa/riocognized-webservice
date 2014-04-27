@@ -1,9 +1,12 @@
 package fr.olympicinsa.riocognized;
 
+import com.googlecode.javacv.cpp.opencv_core;
 import fr.olympicinsa.riocognized.exception.MyExceptionHandler;
-import fr.olympicinsa.riocognized.facedetector.FaceDetector;
-import fr.olympicinsa.riocognized.facedetector.ImageConvertor;
-import fr.olympicinsa.riocognized.facedetector.csv.FaceDBReader;
+import static fr.olympicinsa.riocognized.facedetector.Riocognized.log;
+import fr.olympicinsa.riocognized.facedetector.detection.FaceDetector;
+import fr.olympicinsa.riocognized.facedetector.tools.ImageConvertor;
+import fr.olympicinsa.riocognized.facedetector.db.FaceDBReader;
+import fr.olympicinsa.riocognized.facedetector.recognition.RioRecognizer;
 
 import fr.olympicinsa.riocognized.model.*;
 import fr.olympicinsa.riocognized.repository.*;
@@ -27,6 +30,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.highgui.Highgui;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
@@ -58,7 +62,8 @@ public class RecognitionController extends MyExceptionHandler {
     @Autowired
     private ImageFaceRepository imageFaceRepository;
     public static String DB_PATH = "/opt/openCV/athleteDB";
-
+    public static String RECO = "/opt/openCV/face.yml";
+    
     @RequestMapping("")
     public String index(Map<String, Object> map) {
         try {
@@ -133,12 +138,12 @@ public class RecognitionController extends MyExceptionHandler {
                         try {
                             File outputfile = new File(file);
                             ImageIO.write(crop, "jpg", outputfile);
-                        } catch (IOException e) {                                                             
+                        } catch (IOException e) {
                             e.printStackTrace();
                             System.err.println("Cant't write image cropped");
                         }
-                                                                                                                                                                                                                                                                                        
-                        faces.addFace(new String[]{file,String.valueOf(id)});                                                                                                                                                                              
+
+                        faces.addFace(new String[]{file, String.valueOf(id)});
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -276,6 +281,89 @@ public class RecognitionController extends MyExceptionHandler {
             faceJSON.put("classifier", haar);
             faceJSON.put("detected", detected);
             faceJSON.put("result", "http://lynxlabs.fr.nf/opencv/result.jpg");
+            faceArray.put(faceJSON);
+
+            return faceArray.toString();
+
+        } catch (IOException e) {
+            System.err.printf("Failed while reading bytes from %s: ", e.getMessage());
+            e.printStackTrace();
+            //Content is null
+            throw new InvalidContent();
+        } catch (NullPointerException e) {
+            //Content is not an image
+            throw new InvalidContent();
+        }
+    }
+
+    @RequestMapping(value = "/api/recognize", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public String recognizeFacesURL(@RequestParam("url") String url) {
+
+        String haar = "/opt/openCV/haarcascade_frontalface_alt.xml";
+        String dest = "/var/www/opencv/result.jpg";
+        int athlete = -1;
+        FaceDetector detector = new FaceDetector();
+        BufferedImage imageBuffered;
+        ByteArrayOutputStream bais = new ByteArrayOutputStream();
+        Mat newMat;
+        FaceDBReader faceDB;
+        faceDB = new FaceDBReader(DB_PATH + "/faces.csv");
+        try {
+            URL u = new URL(url);
+            int contentLength = u.openConnection().getContentLength();
+            imageBuffered = ImageIO.read(u);
+            int rows = imageBuffered.getWidth();
+            int cols = imageBuffered.getHeight();
+            byte[] data = ((DataBufferByte) imageBuffered.getRaster().getDataBuffer()).getData();
+            Mat mat = new Mat(cols, rows, CvType.CV_8UC3);
+            mat.put(0, 0, data);
+
+            //System.load("/opt/openCV/libopencv_java248.so");
+            //System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+            log.info("Create Recognizer");
+            RioRecognizer recognizor = new RioRecognizer(faceDB, RECO);
+            //Store faces
+            log.info("Read CSV and load images");
+            recognizor.init();
+            log.info("Train Recognizer");
+            recognizor.train();
+            log.info("Save Recognizer");
+            recognizor.save();
+
+            int detected = detector.detectFaces(mat, dest);
+            Mat crop = detector.cropFaceToMat(mat);
+            log.info("Detected " + detector.getFacesDetected() + " athletes !");
+            if (detector.getFacesDetected() < 0)
+                throw new NoFaceDetectedException();
+         
+            Highgui.imwrite("face_croped.jpg", crop);
+            opencv_core.IplImage face = ImageConvertor.matToIplImage(crop);
+            recognizor.changeRecognizer(1);
+            athlete = recognizor.predictedLabel(face);
+            if (athlete < 1)
+                throw new NotRecognizedException();
+            
+            Athlete athleteDetected = athleteService.findOne(athlete);
+            
+            JSONArray faceArray = new JSONArray();
+            JSONObject faceJSON = new JSONObject();
+            JSONObject athleteJSON = new JSONObject();
+            JSONObject countryJSON = new JSONObject();
+            countryJSON.put("id", athleteDetected.getCountry().getId());
+            countryJSON.put("name", athleteDetected.getCountry().getName());
+            athleteJSON.put("id", athleteDetected.getId());
+            athleteJSON.put("name", athleteDetected.getName());
+            athleteJSON.put("surname", athleteDetected.getSurname());
+            athleteJSON.put("country", countryJSON);
+            athleteJSON.put("sport", athleteDetected.getSport().getId());
+            athleteJSON.put("image_url", athleteDetected.getURL());
+
+            faceJSON.put("image", url);
+            faceJSON.put("precision", recognizor.getPrecision()[0]);
+            faceJSON.put("detected", detected);
+            faceJSON.put("athlete", athleteJSON);
             faceArray.put(faceJSON);
 
             return faceArray.toString();

@@ -15,4 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 public interface CountryRepository extends JpaRepository<Country, Long> {
     @Query("SELECT u FROM Country u WHERE u.id IN (:id)")
     List<Country> findById(@Param("id") List<Country> id);
+    
+    @Query("SELECT u FROM Country u WHERE u.id = ?1")
+    Country findOne(String id);
 }

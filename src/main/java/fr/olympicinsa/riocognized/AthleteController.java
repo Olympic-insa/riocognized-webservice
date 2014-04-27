@@ -18,9 +18,11 @@ import fr.olympicinsa.riocognized.model.*;
 import fr.olympicinsa.riocognized.repository.*;
 import fr.olympicinsa.riocognized.service.AthleteService;
 import fr.olympicinsa.riocognized.service.CountryService;
+import java.beans.PropertyEditorSupport;
 
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -30,6 +32,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 
 /**
  * Handles requests for the application home page.
@@ -42,6 +47,10 @@ public class AthleteController extends MyExceptionHandler {
     private AthleteService athleteService;
     @Autowired
     private CountryService countryService;
+    @Autowired
+    private SportRepository sportRepository;
+    @Autowired
+    private ImageRepository imageRepository;
     /* API GET Method */
 
     @RequestMapping(value = "/api/athletes/full", method = RequestMethod.GET)
@@ -56,13 +65,13 @@ public class AthleteController extends MyExceptionHandler {
 
     @RequestMapping(value = "/api/athletes", method = RequestMethod.GET)
     public @ResponseBody
-    String listDetailAthleteJson(ModelMap model, @RequestParam Map<String,String> param) throws JSONException {
+    String listDetailAthleteJson(ModelMap model, @RequestParam Map<String, String> param) throws JSONException {
         JSONArray athleteArray = new JSONArray();
         List<Athlete> athleteList = param.isEmpty() ? athleteService.findAllOrderByName() : athleteService.findByDescription(param);
         for (Athlete athlete : athleteList) {
             JSONObject countryJSON = new JSONObject();
-            countryJSON.put("id",athlete.getCountry().getId());
-            countryJSON.put("name",athlete.getCountry().getName());
+            countryJSON.put("id", athlete.getCountry().getId());
+            countryJSON.put("name", athlete.getCountry().getName());
             JSONObject athleteJSON = new JSONObject();
             athleteJSON.put("id", athlete.getId());
             athleteJSON.put("name", athlete.getName());
@@ -81,7 +90,7 @@ public class AthleteController extends MyExceptionHandler {
     List<Athlete> listAthleteByNameJson(ModelMap model, @PathVariable("name") String name) throws JSONException {
         return athleteService.findByNameStartingWith(name.toLowerCase());
     }
-    
+
     @RequestMapping(value = "/api/athletes/{id}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
@@ -95,7 +104,6 @@ public class AthleteController extends MyExceptionHandler {
     List<Athlete> listAthleteBySportJson(ModelMap model, @PathVariable("sport") String sport) throws JSONException {
         return athleteService.findBySportStartingWith(sport.toLowerCase());
     }
-
 
     @RequestMapping(value = "/api/sports", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
@@ -124,14 +132,18 @@ public class AthleteController extends MyExceptionHandler {
     public String listUsers(ModelMap model) {
         model.addAttribute("athlete", new Athlete());
         model.addAttribute("athletes", athleteService.findAllOrderByName());
+        model.addAttribute("countryList", countryService.findAll());
+        model.addAttribute("sportList", sportRepository.findAllOrderByName());
         return "athlete";
     }
 
     /* Web POST Method */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String addUser(@ModelAttribute("athlete") Athlete athlete,
-        @RequestParam("file") MultipartFile file, BindingResult result) {
-
+    public String addUser(@Validated @ModelAttribute("athlete") Athlete athlete,
+        @RequestParam("file") MultipartFile file, HttpServletRequest request, BindingResult errors) {
+        if (errors.hasErrors()) {
+            errors.toString();
+        }
         Image image = new Image();
         try {
             byte[] blob = IOUtils.toByteArray(file.getInputStream());
@@ -143,7 +155,7 @@ public class AthleteController extends MyExceptionHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        //imageRepository.save(image);
         athlete.setImage(image);
         athleteService.save(athlete);
         return "redirect:/";
@@ -154,14 +166,32 @@ public class AthleteController extends MyExceptionHandler {
         athleteService.delete(athleteService.findOne(athleteId));
         return "redirect:/";
     }
-    
-    @RequestMapping(value = "/logout", method = RequestMethod.GET)
-	public String logoutPage() {
-		return "logout";
-	}
 
-	@RequestMapping(value = "/login", method = RequestMethod.GET)
-	public String loginPage() {
-		return "login";
-	}
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public String logoutPage() {
+        return "logout";
+    }
+
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public String loginPage() {
+        return "login";
+    }
+
+    @InitBinder
+    protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
+        binder.registerCustomEditor(Country.class, "country", new PropertyEditorSupport() {
+            @Override
+            public void setAsText(String text) {
+                Country country = countryService.findOne(text);
+                setValue(country);
+            }
+        });
+        binder.registerCustomEditor(Sport.class, "sport", new PropertyEditorSupport() {
+            @Override
+            public void setAsText(String text) {
+                Sport sport = sportRepository.findOne(text);
+                setValue(sport);
+            }
+        });
+    }
 }

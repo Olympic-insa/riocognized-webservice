@@ -5,8 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import fr.olympicinsa.riocognized.model.Athlete;
 import fr.olympicinsa.riocognized.model.Country;
-import fr.olympicinsa.riocognized.model.Sport;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.data.jpa.repository.Query;
