@@ -5,6 +5,34 @@ Rio'cognized App RESTFull Webservice.
 
 [lynxlabs.fr.nf][1]
 
+#### Face Recognition API
+
+###### Facial Recognition based on FischerFaces method using OpenCV.
+###### Pass full image URL as argument :
+`GET recognition/api/detect?url={http://urltoyourimage.co/image.jpg}`
+###### Try it!
+http://lynxlabs.fr.nf:8083/recognition/api/recognize?url=http://static.guim.co.uk/sys-images/Guardian/About/General/2012/8/6/1344280750667/Alistair-Brownlee-built-a-008.jpg
+
+###### Response
+```Javascript
+200 OK
+{
+   precision: 2761.738703045782,
+   image: "http://static.guim.co.uk/sys-images/Guardian/About/General/2012/8/6/1344280750667/Alistair-Brownlee-built-a-008.jpg",
+   detected: 1,
+   athlete: {
+      id: 14,
+      image_url: "http://olympic-insa.fr.nf:8083/image/download/29",
+      name: "Brownlee",
+      sport: "triathlon",
+      surname: "Alistair",
+      country: {
+         id: "GB",
+         name: "United Kingdom"
+      }
+   }
+}
+```
 #### Face Detetction API
 
 ###### Facial Detection based on Viola & Jones method.
