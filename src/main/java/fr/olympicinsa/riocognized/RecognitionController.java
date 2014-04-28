@@ -1,20 +1,19 @@
 package fr.olympicinsa.riocognized;
 
-import com.googlecode.javacv.cpp.opencv_core;
 import fr.olympicinsa.riocognized.exception.MyExceptionHandler;
-import static fr.olympicinsa.riocognized.facedetector.Riocognized.log;
 import fr.olympicinsa.riocognized.facedetector.detection.FaceDetector;
 import fr.olympicinsa.riocognized.facedetector.tools.ImageConvertor;
 import fr.olympicinsa.riocognized.facedetector.db.FaceDBReader;
 import fr.olympicinsa.riocognized.facedetector.recognition.RioRecognizer;
 import static fr.olympicinsa.riocognized.facedetector.tools.ImageConvertor.bufferedImagetoMat;
+import fr.olympicinsa.riocognized.facedetector.tools.OpenCV;
 
 import fr.olympicinsa.riocognized.model.*;
 import fr.olympicinsa.riocognized.repository.*;
 import fr.olympicinsa.riocognized.service.AthleteService;
 import fr.olympicinsa.riocognized.service.RecognitionService;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
+import static java.awt.image.BufferedImage.TYPE_3BYTE_BGR;
 import java.beans.PropertyEditorSupport;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -30,9 +29,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.highgui.Highgui;
+import static org.opencv.highgui.Highgui.imwrite;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
@@ -42,6 +40,7 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -61,14 +60,16 @@ public class RecognitionController extends MyExceptionHandler {
     private AthleteService athleteService;
     @Autowired
     private ImageFaceRepository imageFaceRepository;
-    @Autowired 
+    @Autowired
+    private ImageRepository imageRepository;
+    @Autowired
     RecognitionService recognitionService;
-    
+
     public static String HAAR = "/opt/openCV/haarcascade_frontalface_alt.xml";
     public static String DEST = "/var/www/opencv/result.jpg";
     public static String DB_PATH = "/opt/openCV/athleteDB";
     public static String RECO = "/opt/openCV/face.yml";
-    
+
     @RequestMapping("")
     public String index(Map<String, Object> map) {
         try {
@@ -231,7 +232,6 @@ public class RecognitionController extends MyExceptionHandler {
     }
 
     /* API POST Method*/
-
     @RequestMapping(value = "/api/detect", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -280,9 +280,9 @@ public class RecognitionController extends MyExceptionHandler {
             int contentLength = u.openConnection().getContentLength();
             imageBuffered = ImageIO.read(u);
             RioRecognizer recognize = recognitionService.recognizeAthlete(imageBuffered);
-            
-            Athlete athleteDetected = athleteService.findOne((long)recognize.getResult()[0]);
-            
+
+            Athlete athleteDetected = athleteService.findOne((long) recognize.getResult()[0]);
+
             JSONArray faceArray = new JSONArray();
             JSONObject faceJSON = new JSONObject();
             JSONObject athleteJSON = new JSONObject();
@@ -323,6 +323,46 @@ public class RecognitionController extends MyExceptionHandler {
         faceJSON.put("detected", "1");
         faceArray.put(faceJSON);
         return faceArray.toString();
+    }
+
+    @RequestMapping(value = "/api/upload", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    public String handleFileUpload(@RequestBody final Image image) {
+
+        if (image.getContent().length < 1 || !image.getContentType().startsWith("image")) {
+            throw new InvalidContent();
+        }
+        try {
+            BufferedImage imageB = ImageIO.read(new ByteArrayInputStream(image.getContent()));
+            RioRecognizer recognize = recognitionService.recognizeAthlete(imageB);
+
+            Athlete athleteDetected = athleteService.findOne((long) recognize.getResult()[0]);
+
+            JSONArray faceArray = new JSONArray();
+            JSONObject faceJSON = new JSONObject();
+            JSONObject athleteJSON = new JSONObject();
+            JSONObject countryJSON = new JSONObject();
+            countryJSON.put("id", athleteDetected.getCountry().getId());
+            countryJSON.put("name", athleteDetected.getCountry().getName());
+            athleteJSON.put("id", athleteDetected.getId());
+            athleteJSON.put("name", athleteDetected.getName());
+            athleteJSON.put("surname", athleteDetected.getSurname());
+            athleteJSON.put("country", countryJSON);
+            athleteJSON.put("sport", athleteDetected.getSport().getId());
+            athleteJSON.put("image_url", athleteDetected.getURL());
+            faceJSON.put("precision", recognize.getPrecision()[0]);
+            faceJSON.put("athlete", athleteJSON);
+            faceArray.put(faceJSON);
+
+            return faceArray.toString();
+
+        } catch (IOException e) {
+            System.err.printf("Failed while reading bytes from %s: ", e.getMessage());
+            throw new InvalidContent();
+        } catch (NullPointerException e) {
+            throw new InvalidContent();
+        }
     }
 
 }

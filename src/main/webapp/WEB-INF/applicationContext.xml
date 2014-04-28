@@ -39,6 +39,7 @@
         <security:intercept-url pattern="/image/delete/**" access="hasRole('user')" />
         <security:intercept-url pattern="/recognition" access="hasRole('user')" />
         <security:intercept-url pattern="/recognition/*" access="hasRole('user')" />
+        <security:intercept-url pattern="/recognition/api/**" access="permitAll" />
         <security:intercept-url pattern="/login**" access="permitAll" />
         <security:intercept-url pattern="/logout**" access="permitAll" />
         <security:intercept-url pattern="/api**" access="permitAll" />
