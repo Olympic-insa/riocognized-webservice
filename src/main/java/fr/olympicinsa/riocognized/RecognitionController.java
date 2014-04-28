@@ -7,10 +7,12 @@ import fr.olympicinsa.riocognized.facedetector.detection.FaceDetector;
 import fr.olympicinsa.riocognized.facedetector.tools.ImageConvertor;
 import fr.olympicinsa.riocognized.facedetector.db.FaceDBReader;
 import fr.olympicinsa.riocognized.facedetector.recognition.RioRecognizer;
+import static fr.olympicinsa.riocognized.facedetector.tools.ImageConvertor.bufferedImagetoMat;
 
 import fr.olympicinsa.riocognized.model.*;
 import fr.olympicinsa.riocognized.repository.*;
 import fr.olympicinsa.riocognized.service.AthleteService;
+import fr.olympicinsa.riocognized.service.RecognitionService;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.beans.PropertyEditorSupport;
@@ -58,9 +60,12 @@ public class RecognitionController extends MyExceptionHandler {
     @Autowired
     private AthleteService athleteService;
     @Autowired
-    private ImageRepository imageRepository;
-    @Autowired
     private ImageFaceRepository imageFaceRepository;
+    @Autowired 
+    RecognitionService recognitionService;
+    
+    public static String HAAR = "/opt/openCV/haarcascade_frontalface_alt.xml";
+    public static String DEST = "/var/www/opencv/result.jpg";
     public static String DB_PATH = "/opt/openCV/athleteDB";
     public static String RECO = "/opt/openCV/face.yml";
     
@@ -226,36 +231,12 @@ public class RecognitionController extends MyExceptionHandler {
     }
 
     /* API POST Method*/
-    @RequestMapping(value = "/api/detect/", method = RequestMethod.GET)
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public String detectFaces() {
-
-        //System.load("/opt/openCV/libopencv_java248.so");
-        //System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        String haar = "/opt/openCV/haarcascade_frontalface_alt.xml";
-        String image = "/opt/openCV/image.jpg";
-        String dest = "/opt/openCV/imagedetect.jpg";
-        FaceDetector detector = new FaceDetector();
-        int detected = detector.detectFaces(image, dest);
-
-        JSONArray faceArray = new JSONArray();
-        JSONObject faceJSON = new JSONObject();
-        faceJSON.put("image", "/opt/openCV/image.png");
-        faceJSON.put("classifier", haar);
-        faceJSON.put("detected", detected);
-        faceArray.put(faceJSON);
-
-        return faceArray.toString();
-    }
 
     @RequestMapping(value = "/api/detect", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public String detectFacesURL(@RequestParam("url") String url) {
 
-        String haar = "/opt/openCV/haarcascade_frontalface_alt.xml";
-        String dest = "/var/www/opencv/result.jpg";
         FaceDetector detector = new FaceDetector();
         BufferedImage imageBuffered;
         ByteArrayOutputStream bais = new ByteArrayOutputStream();
@@ -265,20 +246,14 @@ public class RecognitionController extends MyExceptionHandler {
             URL u = new URL(url);
             int contentLength = u.openConnection().getContentLength();
             imageBuffered = ImageIO.read(u);
-            int rows = imageBuffered.getWidth();
-            int cols = imageBuffered.getHeight();
-            byte[] data = ((DataBufferByte) imageBuffered.getRaster().getDataBuffer()).getData();
-            Mat mat = new Mat(cols, rows, CvType.CV_8UC3);
-            mat.put(0, 0, data);
+            Mat mat = bufferedImagetoMat(imageBuffered);
 
-            //System.load("/opt/openCV/libopencv_java248.so");
-            //System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-            int detected = detector.detectFaces(mat, dest);
+            int detected = detector.detectFaces(mat, DEST);
 
             JSONArray faceArray = new JSONArray();
             JSONObject faceJSON = new JSONObject();
             faceJSON.put("image", url);
-            faceJSON.put("classifier", haar);
+            faceJSON.put("classifier", HAAR);
             faceJSON.put("detected", detected);
             faceJSON.put("result", "http://lynxlabs.fr.nf/opencv/result.jpg");
             faceArray.put(faceJSON);
@@ -287,11 +262,8 @@ public class RecognitionController extends MyExceptionHandler {
 
         } catch (IOException e) {
             System.err.printf("Failed while reading bytes from %s: ", e.getMessage());
-            e.printStackTrace();
-            //Content is null
             throw new InvalidContent();
         } catch (NullPointerException e) {
-            //Content is not an image
             throw new InvalidContent();
         }
     }
@@ -301,51 +273,15 @@ public class RecognitionController extends MyExceptionHandler {
     @ResponseBody
     public String recognizeFacesURL(@RequestParam("url") String url) {
 
-        String haar = "/opt/openCV/haarcascade_frontalface_alt.xml";
-        String dest = "/var/www/opencv/result.jpg";
-        int athlete = -1;
-        FaceDetector detector = new FaceDetector();
         BufferedImage imageBuffered;
         ByteArrayOutputStream bais = new ByteArrayOutputStream();
-        Mat newMat;
-        FaceDBReader faceDB;
-        faceDB = new FaceDBReader(DB_PATH + "/faces.csv");
         try {
             URL u = new URL(url);
             int contentLength = u.openConnection().getContentLength();
             imageBuffered = ImageIO.read(u);
-            int rows = imageBuffered.getWidth();
-            int cols = imageBuffered.getHeight();
-            byte[] data = ((DataBufferByte) imageBuffered.getRaster().getDataBuffer()).getData();
-            Mat mat = new Mat(cols, rows, CvType.CV_8UC3);
-            mat.put(0, 0, data);
-
-            //System.load("/opt/openCV/libopencv_java248.so");
-            //System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-            log.info("Create Recognizer");
-            RioRecognizer recognizor = new RioRecognizer(faceDB, RECO);
-            //Store faces
-            log.info("Read CSV and load images");
-            recognizor.init();
-            log.info("Train Recognizer");
-            recognizor.train();
-            log.info("Save Recognizer");
-            recognizor.save();
-
-            int detected = detector.detectFaces(mat, dest);
-            Mat crop = detector.cropFaceToMat(mat);
-            log.info("Detected " + detector.getFacesDetected() + " athletes !");
-            if (detector.getFacesDetected() < 0)
-                throw new NoFaceDetectedException();
-         
-            Highgui.imwrite("face_croped.jpg", crop);
-            opencv_core.IplImage face = ImageConvertor.matToIplImage(crop);
-            recognizor.changeRecognizer(1);
-            athlete = recognizor.predictedLabel(face);
-            if (athlete < 1)
-                throw new NotRecognizedException();
+            RioRecognizer recognize = recognitionService.recognizeAthlete(imageBuffered);
             
-            Athlete athleteDetected = athleteService.findOne(athlete);
+            Athlete athleteDetected = athleteService.findOne((long)recognize.getResult()[0]);
             
             JSONArray faceArray = new JSONArray();
             JSONObject faceJSON = new JSONObject();
@@ -361,8 +297,7 @@ public class RecognitionController extends MyExceptionHandler {
             athleteJSON.put("image_url", athleteDetected.getURL());
 
             faceJSON.put("image", url);
-            faceJSON.put("precision", recognizor.getPrecision()[0]);
-            faceJSON.put("detected", detected);
+            faceJSON.put("precision", recognize.getPrecision()[0]);
             faceJSON.put("athlete", athleteJSON);
             faceArray.put(faceJSON);
 
@@ -370,11 +305,8 @@ public class RecognitionController extends MyExceptionHandler {
 
         } catch (IOException e) {
             System.err.printf("Failed while reading bytes from %s: ", e.getMessage());
-            e.printStackTrace();
-            //Content is null
             throw new InvalidContent();
         } catch (NullPointerException e) {
-            //Content is not an image
             throw new InvalidContent();
         }
     }
