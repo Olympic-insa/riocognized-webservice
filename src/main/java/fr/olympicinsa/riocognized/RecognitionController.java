@@ -4,16 +4,15 @@ import fr.olympicinsa.riocognized.exception.MyExceptionHandler;
 import fr.olympicinsa.riocognized.facedetector.detection.FaceDetector;
 import fr.olympicinsa.riocognized.facedetector.tools.ImageConvertor;
 import fr.olympicinsa.riocognized.facedetector.db.FaceDBReader;
+import fr.olympicinsa.riocognized.facedetector.exception.FaceDBException;
 import fr.olympicinsa.riocognized.facedetector.recognition.RioRecognizer;
 import static fr.olympicinsa.riocognized.facedetector.tools.ImageConvertor.bufferedImagetoMat;
-import fr.olympicinsa.riocognized.facedetector.tools.OpenCV;
 
 import fr.olympicinsa.riocognized.model.*;
 import fr.olympicinsa.riocognized.repository.*;
 import fr.olympicinsa.riocognized.service.AthleteService;
 import fr.olympicinsa.riocognized.service.RecognitionService;
 import java.awt.image.BufferedImage;
-import static java.awt.image.BufferedImage.TYPE_3BYTE_BGR;
 import java.beans.PropertyEditorSupport;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -30,7 +29,6 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opencv.core.Mat;
-import static org.opencv.highgui.Highgui.imwrite;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
@@ -114,6 +112,10 @@ public class RecognitionController extends MyExceptionHandler {
 
     @RequestMapping(value = "/init", method = RequestMethod.GET)
     public String init() {
+        File dbDir = new File(DB_PATH);
+        if (!dbDir.exists() && !dbDir.isDirectory()) {
+            dbDir.mkdirs();
+        }
         FaceDBReader faces = new FaceDBReader(DB_PATH + "/faces.csv");
         FaceDetector facedetector = new FaceDetector();
         List<ImageFace> imageList = imageFaceRepository.findAll();
@@ -156,7 +158,11 @@ public class RecognitionController extends MyExceptionHandler {
                 }
             }
         }
-        faces.writeFile();
+        try {
+            faces.writeFile();
+        } catch (FaceDBException e) {
+        }
+
         return "redirect:/recognition";
     }
 
@@ -169,20 +175,26 @@ public class RecognitionController extends MyExceptionHandler {
                 image.setFaceUrl(null);
                 imageFaceRepository.save(image);
             }
+            File dir = new File(DB_PATH);
+            if (dir.exists() && dir.isDirectory()) {
+                dir.delete();
+            }
         }
 
         return "redirect:/recognition";
     }
 
     @InitBinder
-    protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
+    protected
+        void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
         binder.registerCustomEditor(Athlete.class, "athlete", new PropertyEditorSupport() {
             @Override
             public void setAsText(String text) {
                 Athlete ath = athleteService.findOne(Long.parseLong(text));
                 setValue(ath);
             }
-        });
+        }
+        );
     }
 
     @RequestMapping("/download/{imageId}")
@@ -328,7 +340,8 @@ public class RecognitionController extends MyExceptionHandler {
     @RequestMapping(value = "/api/upload", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public String handleFileUpload(@RequestBody final Image image) {
+    public String handleFileUpload(@RequestBody
+        final Image image) {
 
         if (image.getContent().length < 1 || !image.getContentType().startsWith("image")) {
             throw new InvalidContent();
