@@ -9,7 +9,7 @@ Rio'cognized App RESTFull Webservice.
 
 ###### Facial Recognition based on FischerFaces method using OpenCV.
 ###### Pass full image URL as argument :
-`GET recognition/api/detect?url={http://urltoyourimage.co/image.jpg}`
+`GET recognition/api/recognize?url={http://urltoyourimage.co/image.jpg}`
 ###### Try it!
 http://lynxlabs.fr.nf:8083/recognition/api/recognize?url=http://static.guim.co.uk/sys-images/Guardian/About/General/2012/8/6/1344280750667/Alistair-Brownlee-built-a-008.jpg
 
