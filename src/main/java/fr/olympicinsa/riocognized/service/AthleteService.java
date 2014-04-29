@@ -8,6 +8,7 @@ import fr.olympicinsa.riocognized.model.Athlete;
 import fr.olympicinsa.riocognized.model.Country;
 import fr.olympicinsa.riocognized.model.QAthlete;
 import fr.olympicinsa.riocognized.repository.AthleteRepository;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -89,7 +90,14 @@ public class AthleteService {
                 switch (key) {
                     case "gps":
                         if (value != null && !"".equals(value)) {
-                             expression = null;
+                            Date now = new Date();
+                            String[] gps = value.split(",", 2);
+                            Float lat = Float.parseFloat(gps[0]);
+                            Float lon = Float.parseFloat(gps[1]);
+                             expression = athlete.timetables.any().endDate.after(now)
+                                 .and(athlete.timetables.any().startDate.before(now)
+                                 .and(athlete.timetables.any().position.latitude.between(lat - 0.0001, lat + 0.001)
+                                 .and(athlete.timetables.any().position.longitude.between(lon - 0.0001, lon + 0.001))));
                          }
                         break;
                         
