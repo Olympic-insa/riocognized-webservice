@@ -33,6 +33,22 @@ http://lynxlabs.fr.nf:8083/recognition/api/recognize?url=http://static.guim.co.u
    }
 }
 ```
+
+###### Error Handling
+No face detected on image / Athlete not recognized :
+```Javascript
+412 PRECONDITION FAILED
+{
+   NO_FACE_DETECTED
+}
+```
+```Javascript
+418 I AM A TEAPOT
+{
+   NOT_RECOGNIZED
+}
+```
+
 #### Face Detetction API
 
 ###### Facial Detection based on Viola & Jones method.
