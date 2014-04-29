@@ -81,14 +81,14 @@ public class MyExceptionHandler {
     
     @ExceptionHandler(NoFaceDetectedException.class)
     @ResponseBody
-    @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+    @ResponseStatus(HttpStatus.PRECONDITION_FAILED)
     public ErrorMessage handleNoFaceDetectedException(NoFaceDetectedException e, HttpServletRequest req) {
         return new ErrorMessage("NO_FACE_DETECTED");
     }
     
     @ExceptionHandler(NotRecognizedException.class)
     @ResponseBody
-    @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+    @ResponseStatus(HttpStatus.I_AM_A_TEAPOT)
     public ErrorMessage handleNotRecognizedException(NotRecognizedException e, HttpServletRequest req) {
         return new ErrorMessage("NOT_RECOGNIZED");
     }

@@ -338,7 +338,7 @@ public class RecognitionController extends MyExceptionHandler {
     }
 
     @RequestMapping(value = "/api/upload", method = RequestMethod.POST)
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public String handleFileUpload(@RequestBody
         final Image image) {
