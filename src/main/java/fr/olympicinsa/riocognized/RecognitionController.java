@@ -116,51 +116,52 @@ public class RecognitionController extends MyExceptionHandler {
         if (!dbDir.exists() && !dbDir.isDirectory()) {
             dbDir.mkdirs();
         }
-        FaceDBReader faces = new FaceDBReader(DB_PATH + "/faces.csv");
-        FaceDetector facedetector = new FaceDetector();
-        List<ImageFace> imageList = imageFaceRepository.findAll();
-        int i = 0;
-        long id = 0;
-        for (ImageFace image : imageList) {
+        try {
+            FaceDBReader faces = new FaceDBReader(DB_PATH + "/faces.csv");
+            FaceDetector facedetector = new FaceDetector();
+            List<ImageFace> imageList = imageFaceRepository.findAll();
+            int i = 0;
+            long id = 0;
+            for (ImageFace image : imageList) {
 
-            i = (id == image.getAthlete().getId()) ? i + 1 : 0;
-            id = image.getAthlete().getId();
-            File dir = new File(DB_PATH + "/" + id);
-            if (!dir.exists() && !dir.isDirectory()) {
-                dir.mkdirs();
-            }
-            if (image.getFaceContent() == null) {
-                try {
-                    Mat mat = ImageConvertor.byteArrayToMat(image.getContent());
-                    BufferedImage crop = facedetector.cropFaceToBufferedImage(mat);
-                    if (crop != null) {
-                        String file = dir + "/face" + i + ".jpg";
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        ImageIO.write(crop, "jpg", baos);
-                        baos.flush();
-                        byte[] blob = baos.toByteArray();
-                        image.setFaceContent(blob);
-                        image.setFaceUrl(file);
-                        imageFaceRepository.save(image);
-                        baos.close();
-                        try {
-                            File outputfile = new File(file);
-                            ImageIO.write(crop, "jpg", outputfile);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            System.err.println("Cant't write image cropped");
+                i = (id == image.getAthlete().getId()) ? i + 1 : 0;
+                id = image.getAthlete().getId();
+                File dir = new File(DB_PATH + "/" + id);
+                if (!dir.exists() && !dir.isDirectory()) {
+                    dir.mkdirs();
+                }
+                if (image.getFaceContent() == null) {
+                    try {
+                        Mat mat = ImageConvertor.byteArrayToMat(image.getContent());
+                        BufferedImage crop = facedetector.cropFaceToBufferedImage(mat);
+                        if (crop != null) {
+                            String file = dir + "/face" + i + ".jpg";
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            ImageIO.write(crop, "jpg", baos);
+                            baos.flush();
+                            byte[] blob = baos.toByteArray();
+                            image.setFaceContent(blob);
+                            image.setFaceUrl(file);
+                            imageFaceRepository.save(image);
+                            baos.close();
+                            try {
+                                File outputfile = new File(file);
+                                ImageIO.write(crop, "jpg", outputfile);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                System.err.println("Cant't write image cropped");
+                            }
+
+                            faces.addFace(new String[]{file, String.valueOf(id)});
                         }
-
-                        faces.addFace(new String[]{file, String.valueOf(id)});
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
             }
-        }
-        try {
             faces.writeFile();
         } catch (FaceDBException e) {
+            e.printStackTrace();
         }
 
         return "redirect:/recognition";

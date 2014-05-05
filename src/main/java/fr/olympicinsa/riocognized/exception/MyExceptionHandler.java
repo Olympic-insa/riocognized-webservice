@@ -50,42 +50,42 @@ public class MyExceptionHandler {
     public ErrorMessage handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e, HttpServletRequest req) {
         return new ErrorMessage("METHOD_NOT_ALLOWED");
     }
-    
+
     @ExceptionHandler(InterruptedException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.REQUEST_TIMEOUT)
     public ErrorMessage handleInterruptedException(HttpRequestMethodNotSupportedException e, HttpServletRequest req) {
         return new ErrorMessage("METHOD_NOT_ALLOWED");
     }
-    
+
     @ExceptionHandler(InvalidContent.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
     public ErrorMessage handleInvalidContent(InvalidContent e, HttpServletRequest req) {
         return new ErrorMessage("INVALID_OR_EMPTY_CONTENT");
     }
-    
+
     @ExceptionHandler(TooManyResultException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.REQUEST_ENTITY_TOO_LARGE)
     public ErrorMessage handleTooManyResultException(TooManyResultException e, HttpServletRequest req) {
         return new ErrorMessage("TOO_MANY_RESULTS");
     }
-    
+
     @ExceptionHandler(NullPointerException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
     public ErrorMessage handleNullPointerException(NullPointerException e, HttpServletRequest req) {
         return new ErrorMessage("ENTITY_HAS_UNALLOWED_NULL_VALUE");
     }
-    
+
     @ExceptionHandler(NoFaceDetectedException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.PRECONDITION_FAILED)
     public ErrorMessage handleNoFaceDetectedException(NoFaceDetectedException e, HttpServletRequest req) {
         return new ErrorMessage("NO_FACE_DETECTED");
     }
-    
+
     @ExceptionHandler(NotRecognizedException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.I_AM_A_TEAPOT)
@@ -93,15 +93,25 @@ public class MyExceptionHandler {
         return new ErrorMessage("NOT_RECOGNIZED");
     }
     
+    @ExceptionHandler(ProcessingError.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorMessage handleProcessingErrorException(NoSuchRequestHandlingMethodException e, HttpServletRequest req) {
+        return new ErrorMessage("INTERNAL_SERVER_ERROR");
+    }
+
     public static class InvalidContent extends RuntimeException {
     }
-    
+
     public static class TooManyResultException extends RuntimeException {
     }
-    
+
     public static class NoFaceDetectedException extends RuntimeException {
     }
-    
+
     public static class NotRecognizedException extends RuntimeException {
+    }
+
+    public static class ProcessingError extends RuntimeException {
     }
 }
