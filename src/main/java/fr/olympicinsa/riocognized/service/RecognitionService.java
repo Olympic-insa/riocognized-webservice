@@ -64,7 +64,7 @@ public class RecognitionService {
             }
 
             IplImage face = ImageConvertor.matToIplImage(crop);
-            recognizor.changeRecognizer(1);
+            //recognizor.changeRecognizer(1);
             athlete = recognizor.predictedLabel(face);
             if (athlete < 1) {
                 throw new NotRecognizedException();
