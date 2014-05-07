@@ -1,5 +1,6 @@
 package fr.olympicinsa.riocognized;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.olympicinsa.riocognized.exception.MyExceptionHandler;
 import fr.olympicinsa.riocognized.facedetector.detection.FaceDetector;
 import fr.olympicinsa.riocognized.facedetector.tools.ImageConvertor;
@@ -296,24 +297,14 @@ public class RecognitionController extends MyExceptionHandler {
 
             Athlete athleteDetected = athleteService.findOne((long) recognize.getResult()[0]);
 
+            ObjectMapper mapper = new ObjectMapper();
             JSONArray faceArray = new JSONArray();
             JSONObject faceJSON = new JSONObject();
-            JSONObject athleteJSON = new JSONObject();
-            JSONObject countryJSON = new JSONObject();
-            countryJSON.put("id", athleteDetected.getCountry().getId());
-            countryJSON.put("name", athleteDetected.getCountry().getName());
-            athleteJSON.put("id", athleteDetected.getId());
-            athleteJSON.put("name", athleteDetected.getName());
-            athleteJSON.put("surname", athleteDetected.getSurname());
-            athleteJSON.put("country", countryJSON);
-            athleteJSON.put("sport", athleteDetected.getSport().getId());
-            athleteJSON.put("image_url", athleteDetected.getURL());
-
-            faceJSON.put("image", url);
+            JSONObject athleteJSON = new JSONObject(mapper.writeValueAsString(athleteDetected));
             faceJSON.put("precision", recognize.getPrecision()[0]);
             faceJSON.put("athlete", athleteJSON);
             faceArray.put(faceJSON);
-
+            faceArray.put(faceJSON);
             return faceArray.toString();
 
         } catch (IOException e) {
@@ -353,22 +344,13 @@ public class RecognitionController extends MyExceptionHandler {
 
             Athlete athleteDetected = athleteService.findOne((long) recognize.getResult()[0]);
 
+            ObjectMapper mapper = new ObjectMapper();
             JSONArray faceArray = new JSONArray();
             JSONObject faceJSON = new JSONObject();
-            JSONObject athleteJSON = new JSONObject();
-            JSONObject countryJSON = new JSONObject();
-            countryJSON.put("id", athleteDetected.getCountry().getId());
-            countryJSON.put("name", athleteDetected.getCountry().getName());
-            athleteJSON.put("id", athleteDetected.getId());
-            athleteJSON.put("name", athleteDetected.getName());
-            athleteJSON.put("surname", athleteDetected.getSurname());
-            athleteJSON.put("country", countryJSON);
-            athleteJSON.put("sport", athleteDetected.getSport().getId());
-            athleteJSON.put("image_url", athleteDetected.getURL());
+            JSONObject athleteJSON = new JSONObject(mapper.writeValueAsString(athleteDetected));
             faceJSON.put("precision", recognize.getPrecision()[0]);
             faceJSON.put("athlete", athleteJSON);
             faceArray.put(faceJSON);
-
             return faceArray.toString();
 
         } catch (IOException e) {
