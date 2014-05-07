@@ -304,7 +304,6 @@ public class RecognitionController extends MyExceptionHandler {
             faceJSON.put("precision", recognize.getPrecision()[0]);
             faceJSON.put("athlete", athleteJSON);
             faceArray.put(faceJSON);
-            faceArray.put(faceJSON);
             return faceArray.toString();
 
         } catch (IOException e) {
