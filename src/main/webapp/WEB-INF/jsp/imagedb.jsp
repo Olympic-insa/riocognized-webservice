@@ -136,7 +136,11 @@
                                             <a href="${pageContext.request.contextPath}/recognition/remove/${image.id}"
                                                 onclick="return confirm('Are you sure you want to delete this image?')"><img
                                                 src="${pageContext.request.contextPath}/img/delete_icon.gif" border="0"
-                                                title="Delete this image"/></a> 
+                                                title="Delete this image"/></a>
+                                            <a href="${pageContext.request.contextPath}/recognition/removeFace/${image.id}"
+                                                onclick="return confirm('Are you sure you want to delete this image from FaceDatabase?')"><img
+                                                    src="${pageContext.request.contextPath}/img/trash.png" width="16" height="16" border="0"
+                                                title="Delete this image"/></a>    
                                         </td>
                                     </tr>
                                 </c:forEach>

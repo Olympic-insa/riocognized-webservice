@@ -21,12 +21,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opencv.core.Mat;
@@ -68,7 +71,9 @@ public class RecognitionController extends MyExceptionHandler {
     public static String DEST = "/var/www/opencv/result.jpg";
     public static String DB_PATH = "/opt/openCV/athleteDB";
     public static String RECO = "/opt/openCV/face.yml";
-
+    
+    private static final Logger logger = Logger.getLogger(RecognitionController.class.getName());
+    
     @RequestMapping("")
     public String index(Map<String, Object> map) {
         try {
@@ -123,8 +128,9 @@ public class RecognitionController extends MyExceptionHandler {
             List<ImageFace> imageList = imageFaceRepository.findAll();
             int i = 0;
             long id = 0;
+            int y = 0;
             for (ImageFace image : imageList) {
-
+                if (y<15) {
                 i = (id == image.getAthlete().getId()) ? i + 1 : 0;
                 id = image.getAthlete().getId();
                 File dir = new File(DB_PATH + "/" + id);
@@ -136,7 +142,7 @@ public class RecognitionController extends MyExceptionHandler {
                         Mat mat = ImageConvertor.byteArrayToMat(image.getContent());
                         BufferedImage crop = facedetector.cropFaceToBufferedImage(mat);
                         if (crop != null) {
-                            String file = dir + "/face" + i + ".jpg";
+                            String file = dir + "/face" + image.getId().toString() + ".jpg";
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
                             ImageIO.write(crop, "jpg", baos);
                             baos.flush();
@@ -159,6 +165,8 @@ public class RecognitionController extends MyExceptionHandler {
                         e.printStackTrace();
                     }
                 }
+                y++;
+            }
             }
             faces.writeFile();
         } catch (FaceDBException e) {
@@ -244,6 +252,35 @@ public class RecognitionController extends MyExceptionHandler {
 
         return "redirect:/recognition";
     }
+
+    @RequestMapping("/removeFace/{imageId}")
+    public String removeFace(@PathVariable("imageId") Long imageId) {
+        ImageFace image = imageFaceRepository.findOne(imageId);
+        try {
+            FaceDBReader faces = new FaceDBReader(DB_PATH + "/faces.csv");
+            ArrayList<String[]> list = (ArrayList)faces.readFile(DB_PATH + "/faces.csv");
+            String id = image.getAthlete().getId().toString();
+            String file = image.getFaceUrl();
+            Iterator it = list.iterator();
+            while (it.hasNext()) {
+                String[] i = (String[])it.next();
+                if (i[0].equals(file)) {
+                    it.remove();
+                }
+            }
+            list.trimToSize();
+            logger.info(list.toString());
+            faces.setList(list);
+            faces.writeFile();
+        } catch (FaceDBException e) {
+            e.printStackTrace();
+        }
+        image.setFaceContent(null);
+        image.setFaceUrl(null);
+        imageFaceRepository.save(image);
+        return "redirect:/recognition";
+    }
+
 
     /* API POST Method*/
     @RequestMapping(value = "/api/detect", method = RequestMethod.GET)
