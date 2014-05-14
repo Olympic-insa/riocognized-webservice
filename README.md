@@ -8,6 +8,17 @@ Rio'cognized App RESTFull Webservice.
 #### Face Recognition API
 
 ###### Facial Recognition based on FischerFaces method using OpenCV.
+###### Using Riocongized smartphone app:
+`POST recognition/api/upload`
+###### Required format :
+```javascript
+{
+  name: "Name", // not required
+  description: "metadata string", // not required - use it for context informations as gps position
+  content: "00444040400024+=", // base64 format - required
+  contentType: "image/jpeg" , //MIME Type - required (image/*)
+}
+```
 ###### Pass full image URL as argument :
 `GET recognition/api/recognize?url={http://urltoyourimage.co/image.jpg}`
 ###### Try it!
@@ -18,18 +29,49 @@ http://lynxlabs.fr.nf:8083/recognition/api/recognize?url=http://static.guim.co.u
 200 OK
 {
    precision: 2761.738703045782,
-   image: "http://static.guim.co.uk/sys-images/Guardian/About/General/2012/8/6/1344280750667/Alistair-Brownlee-built-a-008.jpg",
-   detected: 1,
    athlete: {
-      id: 14,
-      image_url: "http://olympic-insa.fr.nf:8083/image/download/29",
-      name: "Brownlee",
-      sport: "triathlon",
+      privacy: false,
       surname: "Alistair",
+      sport: {
+         id: "triathlon"
+      },
+      stringDoB: "23/04/1988",
+      timetables: [
+      {
+         position: {
+            id: 3,
+            description: "copacabana beach",
+            longitude: -43.1799,
+            latitude: -22.9644,
+            type: "outdoor"
+         },
+         id: 2,
+         startDate: "2013-08-01,14:00",
+         description: "men triathlon",
+         sport: {
+         id: "triathlon"
+         },
+         endDate: "2016-08-01,18:00"
+      }],
       country: {
          id: "GB",
          name: "United Kingdom"
-      }
+         },
+      id: 14,
+      content: "Champion Olympique",
+      image_url: "http://olympic-insa.fr.nf:8083/image/download/29",
+      doB: "1988-04-23",
+      racing: true,
+      description: {
+         fit: "skinny",
+         race_suit: "blue",
+         hair_color: "brown",
+         gender: "M",
+         skin_color: "white",
+         hair_length: "1,2"
+      },
+      name: "Brownlee",
+      age: 26
    }
 }
 ```
