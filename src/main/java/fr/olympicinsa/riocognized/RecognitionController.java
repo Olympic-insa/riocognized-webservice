@@ -71,9 +71,9 @@ public class RecognitionController extends MyExceptionHandler {
     public static String DEST = "/var/www/opencv/result.jpg";
     public static String DB_PATH = "/opt/openCV/athleteDB";
     public static String RECO = "/opt/openCV/face.yml";
-    
+
     private static final Logger logger = Logger.getLogger(RecognitionController.class.getName());
-    
+
     @RequestMapping("")
     public String index(Map<String, Object> map) {
         try {
@@ -130,7 +130,7 @@ public class RecognitionController extends MyExceptionHandler {
             long id = 0;
             int y = 0;
             for (ImageFace image : imageList) {
-                if (y<15) {
+                if (y < 15) {
                     i = (id == image.getAthlete().getId()) ? i + 1 : 0;
                     id = image.getAthlete().getId();
                     File dir = new File(DB_PATH + "/" + id);
@@ -247,9 +247,27 @@ public class RecognitionController extends MyExceptionHandler {
 
     @RequestMapping("/remove/{imageId}")
     public String remove(@PathVariable("imageId") Long imageId) {
-
+        ImageFace image = imageFaceRepository.findOne(imageId);
+        try {
+            FaceDBReader faces = new FaceDBReader(DB_PATH + "/faces.csv");
+            ArrayList<String[]> list = (ArrayList) faces.readFile(DB_PATH + "/faces.csv");
+            String id = image.getAthlete().getId().toString();
+            String file = image.getFaceUrl();
+            Iterator it = list.iterator();
+            while (it.hasNext()) {
+                String[] i = (String[]) it.next();
+                if (i[0].equals(file)) {
+                    it.remove();
+                }
+            }
+            list.trimToSize();
+            logger.info(list.toString());
+            faces.setList(list);
+            faces.writeFile();
+        } catch (FaceDBException e) {
+            e.printStackTrace();
+        }
         imageFaceRepository.delete(imageId);
-
         return "redirect:/recognition";
     }
 
@@ -258,12 +276,12 @@ public class RecognitionController extends MyExceptionHandler {
         ImageFace image = imageFaceRepository.findOne(imageId);
         try {
             FaceDBReader faces = new FaceDBReader(DB_PATH + "/faces.csv");
-            ArrayList<String[]> list = (ArrayList)faces.readFile(DB_PATH + "/faces.csv");
+            ArrayList<String[]> list = (ArrayList) faces.readFile(DB_PATH + "/faces.csv");
             String id = image.getAthlete().getId().toString();
             String file = image.getFaceUrl();
             Iterator it = list.iterator();
             while (it.hasNext()) {
-                String[] i = (String[])it.next();
+                String[] i = (String[]) it.next();
                 if (i[0].equals(file)) {
                     it.remove();
                 }
