@@ -2,16 +2,17 @@ package fr.olympicinsa.riocognized;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.olympicinsa.riocognized.exception.MyExceptionHandler;
-import fr.olympicinsa.riocognized.facedetector.detection.FaceDetector;
-import fr.olympicinsa.riocognized.facedetector.tools.ImageConvertor;
 import fr.olympicinsa.riocognized.facedetector.db.FaceDBReader;
+import fr.olympicinsa.riocognized.facedetector.detection.FaceDetector;
 import fr.olympicinsa.riocognized.facedetector.exception.FaceDBException;
 import fr.olympicinsa.riocognized.facedetector.recognition.RioRecognizer;
+import fr.olympicinsa.riocognized.facedetector.tools.ImageConvertor;
 import static fr.olympicinsa.riocognized.facedetector.tools.ImageConvertor.bufferedImagetoMat;
 
 import fr.olympicinsa.riocognized.model.*;
 import fr.olympicinsa.riocognized.repository.*;
 import fr.olympicinsa.riocognized.service.AthleteService;
+import fr.olympicinsa.riocognized.service.ImageFaceService;
 import fr.olympicinsa.riocognized.service.RecognitionService;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyEditorSupport;
@@ -35,8 +36,10 @@ import org.json.JSONObject;
 import org.opencv.core.Mat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -58,12 +61,13 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/recognition")
 public class RecognitionController extends MyExceptionHandler {
 
+    private Logger logger = Logger.getLogger(RecognitionController.class);
     @Autowired
     private AthleteService athleteService;
     @Autowired
     private ImageFaceRepository imageFaceRepository;
     @Autowired
-    private ImageRepository imageRepository;
+    private ImageFaceService imageFaceService;
     @Autowired
     RecognitionService recognitionService;
 
@@ -71,15 +75,23 @@ public class RecognitionController extends MyExceptionHandler {
     public static String DEST = "/var/www/opencv/result.jpg";
     public static String DB_PATH = "/opt/openCV/athleteDB";
     public static String RECO = "/opt/openCV/face.yml";
-    
-    private static final Logger logger = Logger.getLogger(RecognitionController.class.getName());
-    
-    @RequestMapping("")
-    public String index(Map<String, Object> map) {
+
+    @RequestMapping(value = "")
+    public String index(@RequestParam(value="page", defaultValue = "1") Integer pageNumber, Map<String, Object> map) {
         try {
+            Page<ImageFace> page = imageFaceService.getImageFace(pageNumber);
+            
+            int current = page.getNumber() + 1;
+            int begin = Math.max(1, current - 5);
+            int end = Math.min(begin + 10, page.getTotalPages());
+
+            map.put("beginIndex", begin);
+            map.put("endIndex", end);
+            map.put("currentIndex", current);
             map.put("image", new ImageFace());
-            map.put("imageList", imageFaceRepository.findAll());
+            map.put("imageList", page);
             map.put("athleteList", athleteService.findAllOrderByName());
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -130,43 +142,43 @@ public class RecognitionController extends MyExceptionHandler {
             long id = 0;
             int y = 0;
             for (ImageFace image : imageList) {
-                if (y<15) {
-                i = (id == image.getAthlete().getId()) ? i + 1 : 0;
-                id = image.getAthlete().getId();
-                File dir = new File(DB_PATH + "/" + id);
-                if (!dir.exists() && !dir.isDirectory()) {
-                    dir.mkdirs();
-                }
-                if (image.getFaceContent() == null) {
-                    try {
-                        Mat mat = ImageConvertor.byteArrayToMat(image.getContent());
-                        BufferedImage crop = facedetector.cropFaceToBufferedImage(mat);
-                        if (crop != null) {
-                            String file = dir + "/face" + image.getId().toString() + ".jpg";
-                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                            ImageIO.write(crop, "jpg", baos);
-                            baos.flush();
-                            byte[] blob = baos.toByteArray();
-                            image.setFaceContent(blob);
-                            image.setFaceUrl(file);
-                            imageFaceRepository.save(image);
-                            baos.close();
-                            try {
-                                File outputfile = new File(file);
-                                ImageIO.write(crop, "jpg", outputfile);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                                System.err.println("Cant't write image cropped");
-                            }
+                if (y < 15) {
+                    i = (id == image.getAthlete().getId()) ? i + 1 : 0;
+                    id = image.getAthlete().getId();
+                    File dir = new File(DB_PATH + "/" + id);
+                    if (!dir.exists() && !dir.isDirectory()) {
+                        dir.mkdirs();
+                    }
+                    if (image.getFaceContent() == null) {
+                        try {
+                            Mat mat = ImageConvertor.byteArrayToMat(image.getContent());
+                            BufferedImage crop = facedetector.cropFaceToBufferedImage(mat);
+                            if (crop != null) {
+                                String file = dir + "/face" + image.getId().toString() + ".jpg";
+                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                ImageIO.write(crop, "jpg", baos);
+                                baos.flush();
+                                byte[] blob = baos.toByteArray();
+                                image.setFaceContent(blob);
+                                image.setFaceUrl(file);
+                                imageFaceRepository.save(image);
+                                baos.close();
+                                try {
+                                    File outputfile = new File(file);
+                                    ImageIO.write(crop, "jpg", outputfile);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    System.err.println("Cant't write image cropped");
+                                }
 
-                            faces.addFace(new String[]{file, String.valueOf(id)});
+                                faces.addFace(new String[]{file, String.valueOf(id)});
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                        y++;
                     }
                 }
-                y++;
-            }
             }
             faces.writeFile();
         } catch (FaceDBException e) {
@@ -247,9 +259,27 @@ public class RecognitionController extends MyExceptionHandler {
 
     @RequestMapping("/remove/{imageId}")
     public String remove(@PathVariable("imageId") Long imageId) {
-
+        ImageFace image = imageFaceRepository.findOne(imageId);
+        try {
+            FaceDBReader faces = new FaceDBReader(DB_PATH + "/faces.csv");
+            ArrayList<String[]> list = (ArrayList) faces.readFile(DB_PATH + "/faces.csv");
+            String id = image.getAthlete().getId().toString();
+            String file = image.getFaceUrl();
+            Iterator it = list.iterator();
+            while (it.hasNext()) {
+                String[] i = (String[]) it.next();
+                if (i[0].equals(file)) {
+                    it.remove();
+                }
+            }
+            list.trimToSize();
+            logger.info(list.toString());
+            faces.setList(list);
+            faces.writeFile();
+        } catch (FaceDBException e) {
+            e.printStackTrace();
+        }
         imageFaceRepository.delete(imageId);
-
         return "redirect:/recognition";
     }
 
@@ -258,12 +288,12 @@ public class RecognitionController extends MyExceptionHandler {
         ImageFace image = imageFaceRepository.findOne(imageId);
         try {
             FaceDBReader faces = new FaceDBReader(DB_PATH + "/faces.csv");
-            ArrayList<String[]> list = (ArrayList)faces.readFile(DB_PATH + "/faces.csv");
+            ArrayList<String[]> list = (ArrayList) faces.readFile(DB_PATH + "/faces.csv");
             String id = image.getAthlete().getId().toString();
             String file = image.getFaceUrl();
             Iterator it = list.iterator();
             while (it.hasNext()) {
-                String[] i = (String[])it.next();
+                String[] i = (String[]) it.next();
                 if (i[0].equals(file)) {
                     it.remove();
                 }
@@ -370,7 +400,7 @@ public class RecognitionController extends MyExceptionHandler {
     @ResponseBody
     public String handleFileUpload(@RequestBody
         final Image image) {
-
+        logger.info("Image upload and request detection");
         if (image.getContent().length < 1 || !image.getContentType().startsWith("image")) {
             throw new InvalidContent();
         }
@@ -387,6 +417,7 @@ public class RecognitionController extends MyExceptionHandler {
             faceJSON.put("precision", recognize.getPrecision()[0]);
             faceJSON.put("athlete", athleteJSON);
             faceArray.put(faceJSON);
+            logger.info("Json result : " + faceArray.toString());
             return faceArray.toString();
 
         } catch (IOException e) {

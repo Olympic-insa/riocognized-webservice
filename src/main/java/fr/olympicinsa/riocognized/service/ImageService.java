@@ -3,6 +3,7 @@ package fr.olympicinsa.riocognized.service;
 import com.mysema.query.types.expr.BooleanExpression;
 import fr.olympicinsa.riocognized.model.Athlete;
 import fr.olympicinsa.riocognized.model.Image;
+import fr.olympicinsa.riocognized.model.ImageFace;
 import fr.olympicinsa.riocognized.model.ImagePub;
 import fr.olympicinsa.riocognized.model.QAthlete;
 import fr.olympicinsa.riocognized.model.QImage;
@@ -17,6 +18,9 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Projections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,27 +29,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class ImageService {
 
     @Autowired
-    private ImagePubRepository imageRepository;
-    @PersistenceContext
-    private EntityManager em;
+    private ImageRepository imageRepository;
     
-    public ImagePub findOneRandom() {
-        Criterion restriction;
-        Session session = em.unwrap(Session.class);
-        ImagePub result = null;  // will later contain a random entity
-        Criteria crit = session.createCriteria(ImagePub.class);
-        //crit.add(restriction);
-        crit.setProjection(Projections.rowCount());
-        int count = ((Number) crit.uniqueResult()).intValue();
-        if (0 != count) {
-            int index = new Random().nextInt(count);
-            crit = session.createCriteria(ImagePub.class);
-            //crit.add(restriction);
-            result = (ImagePub) crit.setFirstResult(index).setMaxResults(1).uniqueResult();
-        }
-        if (result == null) {
-            throw new EmptyResultDataAccessException(1);
-        }
-        return result;
+    private static final int PAGE_SIZE = 15;
+
+    public Page<Image> getImageFace(Integer pageNumber) {
+        PageRequest request =
+            new PageRequest(pageNumber - 1, PAGE_SIZE, Sort.Direction.DESC, "id");
+        return imageRepository.findAll(request);
     }
 }

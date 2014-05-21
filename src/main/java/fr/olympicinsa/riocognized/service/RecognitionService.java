@@ -14,12 +14,13 @@ import fr.olympicinsa.riocognized.facedetector.tools.ImageConvertor;
 import static fr.olympicinsa.riocognized.facedetector.tools.ImageConvertor.bufferedImagetoMat;
 import java.awt.image.BufferedImage;
 import org.opencv.core.Mat;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
 
 @Service
 public class RecognitionService {
-
+    private Logger logger = Logger.getLogger(RecognitionService.class);
     public static String HAAR = "/opt/openCV/haarcascade_frontalface_alt.xml";
     public static String DEST = "/var/www/opencv/result.jpg";
     public static String DB_PATH = "/opt/openCV/athleteDB";
@@ -62,7 +63,7 @@ public class RecognitionService {
             if (detector.getFacesDetected() < 0) {
                 throw new NoFaceDetectedException();
             }
-
+                
             IplImage face = ImageConvertor.matToIplImage(crop);
             //recognizor.changeRecognizer(1);
             athlete = recognizor.predictedLabel(face);
