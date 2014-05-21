@@ -13,7 +13,11 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd" xmlns:mvc="http://www.springframework.org/schema/mvc">
 
     <bean class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping"/>
-    <mvc:annotation-driven/>
+    <mvc:annotation-driven>
+        <mvc:argument-resolvers>
+            <bean class="org.springframework.data.web.PageableArgumentResolver"></bean>
+        </mvc:argument-resolvers>
+    </mvc:annotation-driven> 
     <mvc:default-servlet-handler />
     <context:component-scan base-package="fr.olympicinsa.riocognized"/>
     <context:component-scan base-package="fr.olympicinsa.riocognized.model"/>

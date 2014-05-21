@@ -2,16 +2,17 @@ package fr.olympicinsa.riocognized;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.olympicinsa.riocognized.exception.MyExceptionHandler;
-import fr.olympicinsa.riocognized.facedetector.detection.FaceDetector;
-import fr.olympicinsa.riocognized.facedetector.tools.ImageConvertor;
 import fr.olympicinsa.riocognized.facedetector.db.FaceDBReader;
+import fr.olympicinsa.riocognized.facedetector.detection.FaceDetector;
 import fr.olympicinsa.riocognized.facedetector.exception.FaceDBException;
 import fr.olympicinsa.riocognized.facedetector.recognition.RioRecognizer;
+import fr.olympicinsa.riocognized.facedetector.tools.ImageConvertor;
 import static fr.olympicinsa.riocognized.facedetector.tools.ImageConvertor.bufferedImagetoMat;
 
 import fr.olympicinsa.riocognized.model.*;
 import fr.olympicinsa.riocognized.repository.*;
 import fr.olympicinsa.riocognized.service.AthleteService;
+import fr.olympicinsa.riocognized.service.ImageFaceService;
 import fr.olympicinsa.riocognized.service.RecognitionService;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyEditorSupport;
@@ -35,8 +36,10 @@ import org.json.JSONObject;
 import org.opencv.core.Mat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -58,12 +61,13 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/recognition")
 public class RecognitionController extends MyExceptionHandler {
 
+    private Logger logger = Logger.getLogger(RecognitionController.class);
     @Autowired
     private AthleteService athleteService;
     @Autowired
     private ImageFaceRepository imageFaceRepository;
     @Autowired
-    private ImageRepository imageRepository;
+    private ImageFaceService imageFaceService;
     @Autowired
     RecognitionService recognitionService;
 
@@ -72,14 +76,22 @@ public class RecognitionController extends MyExceptionHandler {
     public static String DB_PATH = "/opt/openCV/athleteDB";
     public static String RECO = "/opt/openCV/face.yml";
 
-    private static final Logger logger = Logger.getLogger(RecognitionController.class.getName());
-
-    @RequestMapping("")
-    public String index(Map<String, Object> map) {
+    @RequestMapping(value = "")
+    public String index(@RequestParam(value="page", defaultValue = "1") Integer pageNumber, Map<String, Object> map) {
         try {
+            Page<ImageFace> page = imageFaceService.getImageFace(pageNumber);
+            
+            int current = page.getNumber() + 1;
+            int begin = Math.max(1, current - 5);
+            int end = Math.min(begin + 10, page.getTotalPages());
+
+            map.put("beginIndex", begin);
+            map.put("endIndex", end);
+            map.put("currentIndex", current);
             map.put("image", new ImageFace());
-            map.put("imageList", imageFaceRepository.findAll());
+            map.put("imageList", page);
             map.put("athleteList", athleteService.findAllOrderByName());
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -388,7 +400,7 @@ public class RecognitionController extends MyExceptionHandler {
     @ResponseBody
     public String handleFileUpload(@RequestBody
         final Image image) {
-
+        logger.info("Image upload and request detection");
         if (image.getContent().length < 1 || !image.getContentType().startsWith("image")) {
             throw new InvalidContent();
         }
@@ -405,6 +417,7 @@ public class RecognitionController extends MyExceptionHandler {
             faceJSON.put("precision", recognize.getPrecision()[0]);
             faceJSON.put("athlete", athleteJSON);
             faceArray.put(faceJSON);
+            logger.info("Json result : " + faceArray.toString());
             return faceArray.toString();
 
         } catch (IOException e) {

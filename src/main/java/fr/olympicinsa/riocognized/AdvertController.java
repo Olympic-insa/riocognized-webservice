@@ -10,7 +10,7 @@ import fr.olympicinsa.riocognized.model.Image;
 import fr.olympicinsa.riocognized.model.ImagePub;
 import fr.olympicinsa.riocognized.repository.ImagePubRepository;
 import fr.olympicinsa.riocognized.repository.ImageRepository;
-import fr.olympicinsa.riocognized.service.ImageService;
+import fr.olympicinsa.riocognized.service.ImagePubService;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -46,7 +46,7 @@ public class AdvertController extends MyExceptionHandler{
     @Autowired
     private ImagePubRepository imagePubRepository;
     @Autowired
-    private ImageService imageService;
+    private ImagePubService imageService;
     
     @RequestMapping("")
     public String getAdvert(HttpServletResponse response) {
