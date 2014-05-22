@@ -21,7 +21,7 @@
         class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
  
         <!-- one of the properties available; the maximum file size in bytes -->
-        <property name="maxUploadSize" value="800000" />
+        <property name="maxUploadSize" value="256000" />
     </bean>
     <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
     </bean>
@@ -49,7 +49,7 @@
         <security:logout logout-success-url="/logout" delete-cookies="JSESSIONID"/>
         <security:remember-me />
         <security:session-management invalid-session-url="/">
-            <security:concurrency-control max-sessions="5" error-if-maximum-exceeded="false" />
+            <security:concurrency-control max-sessions="10" error-if-maximum-exceeded="false" />
         </security:session-management>
     </security:http>
     
