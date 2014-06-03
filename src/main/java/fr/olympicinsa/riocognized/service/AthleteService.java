@@ -103,7 +103,7 @@ public class AthleteService {
                         
                     case "country" :
                          if (value != null && !"".equals(value)) {
-                             expression = athlete.country.id.like("%"
+                             expression = (athlete.country.name).like("%"
                                  + value + "%");
                          }
                          break;

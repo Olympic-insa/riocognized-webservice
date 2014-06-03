@@ -60,7 +60,7 @@ public class RecognitionService {
             Mat crop = detector.cropFaceToMat(mat);
             log.info("Detected " + detector.getFacesDetected() + " athletes !");
 
-            if (detector.getFacesDetected() < 0) {
+            if (detector.getFacesDetected() < 1) {
                 throw new NoFaceDetectedException();
             }
                 
@@ -68,6 +68,9 @@ public class RecognitionService {
             //recognizor.changeRecognizer(1);
             athlete = recognizor.predictedLabel(face);
             if (athlete < 1) {
+                throw new NotRecognizedException();
+            }
+            if (recognizor.getPrecision()[0] > 18) {
                 throw new NotRecognizedException();
             }
             return recognizor;
